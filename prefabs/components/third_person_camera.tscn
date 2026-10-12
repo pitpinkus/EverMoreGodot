@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/components/third_person_camera.gd" id="1_camera"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_arm"]
+radius = 0.25
+
+[node name="ThirdPersonCamera" type="Node3D"]
+script = ExtResource("1_camera")
+
+[node name="Pitch" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.953717, 0.300706, 0, -0.300706, 0.953717, 0, 0, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="Pitch"]
+unique_name_in_owner = true
+collision_mask = 1
+shape = SubResource("SphereShape3D_arm")
+spring_length = 5.0
+
+[node name="Camera3D" type="Camera3D" parent="Pitch/SpringArm3D"]
+current = true

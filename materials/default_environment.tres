@@ -1,0 +1,13 @@
+[gd_resource type="Environment" format=3]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_default"]
+
+[sub_resource type="Sky" id="Sky_default"]
+sky_material = SubResource("ProceduralSkyMaterial_default")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_default")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 2

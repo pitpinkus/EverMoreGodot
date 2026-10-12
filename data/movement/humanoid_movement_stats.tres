@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MovementStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/movement_stats.gd" id="1_stats"]
+
+[resource]
+script = ExtResource("1_stats")
+walk_speed = 6.0
+run_speed = 9.0
+ground_acceleration = 60.0
+ground_deceleration = 80.0
+air_acceleration = 20.0
+gravity = 25.0
+max_fall_speed = 40.0
+jump_height = 1.2
+coyote_time = 0.12
+jump_buffer_time = 0.15
+turn_smooth_time = 0.1

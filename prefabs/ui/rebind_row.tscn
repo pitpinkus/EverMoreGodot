@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/rebind_row.gd" id="1_row"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/rebind_button.tscn" id="2_button"]
+
+[node name="RebindRow" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_row")
+
+[node name="ActionLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyboardButton" parent="." instance=ExtResource("2_button")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GamepadButton" parent="." instance=ExtResource("2_button")]
+unique_name_in_owner = true
+layout_mode = 2
+gamepad_slot = true
+listening_text = "Press a button..."

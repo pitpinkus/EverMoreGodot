@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://levels/level_base.tscn" id="1_level"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://prefabs/props/ground_plane.tscn" id="3_ground"]
+[ext_resource type="PackedScene" path="res://prefabs/props/block.tscn" id="4_block"]
+
+[node name="TestOverworld" instance=ExtResource("1_level")]
+player_scene = ExtResource("2_player")
+
+[node name="GroundPlane" parent="Terrain" instance=ExtResource("3_ground")]
+
+[node name="PlayerSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+
+[node name="StepLow" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+size = Vector3(3, 0.5, 3)
+
+[node name="StepMid" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)
+size = Vector3(3, 1, 3)
+
+[node name="StepHigh" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+size = Vector3(3, 1.5, 3)
+
+[node name="Ledge" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16)
+size = Vector3(5, 2.5, 5)
+
+[node name="GapStep" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -1.5)
+size = Vector3(3, 0.75, 2)
+
+[node name="PlatformA" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -6)
+size = Vector3(4, 1.5, 4)
+
+[node name="PlatformB" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -14.5)
+size = Vector3(4, 1.5, 4)
+
+[node name="RampGentle" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, -8, 0, -8)
+size = Vector3(3, 0.2, 8)
+
+[node name="RampSteep" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 0.642788, -0.766044, 0, 0.766044, 0.642788, -14, 0, -8)
+size = Vector3(3, 0.2, 8)
+
+[node name="PillarL" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 4)
+size = Vector3(1, 3, 1)
+
+[node name="PillarR" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 4)
+size = Vector3(1, 3, 1)
+
+[node name="Wall" parent="Props" instance=ExtResource("4_block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+size = Vector3(10, 3, 1)

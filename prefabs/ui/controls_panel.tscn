@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/controls_panel.gd" id="1_panel"]
+[ext_resource type="Resource" path="res://data/settings/rebindable_actions.tres" id="2_actions"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/rebind_row.tscn" id="3_row"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/dialog_button.tscn" id="4_dialog_button"]
+
+[node name="ControlsPanel" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_panel")
+action_list = ExtResource("2_actions")
+row_scene = ExtResource("3_row")
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ActionHeader" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionLabel"
+text = "Action"
+
+[node name="KeyboardHeader" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionLabel"
+text = "Keyboard / Mouse"
+horizontal_alignment = 1
+
+[node name="GamepadHeader" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionLabel"
+text = "Gamepad"
+horizontal_alignment = 1
+
+[node name="Rows" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResetControlsButton" parent="." instance=ExtResource("4_dialog_button")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Reset controls"

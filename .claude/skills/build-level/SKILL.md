@@ -8,15 +8,15 @@ description: Create or extend a map / level / world area scene in Evermore (Godo
 A level is a **composition of prefabs**. It owns layout and wiring only; it should contain almost no logic of its own.
 
 ## 1. Check what exists
-- `Glob res://levels/**/*.tscn` — is there a `level_base.tscn` to inherit from? (If not and this is the first level, create it in step 2.)
-- `Glob res://prefabs/**/*.tscn` — list props and characters you can place. Anything missing gets built with `build-prop` / `build-character` first, **as a prefab**, then instanced here.
+- `Glob res://levels/*.tscn` — is there a `level_base.tscn` to inherit from? (If not and this is the first level, create it in step 2.)
+- `Glob res://prefabs/*/*.tscn` — list props and characters you can place. Anything missing gets built with `build-prop` / `build-character` first, **as a prefab**, then instanced here.
 
 ## 2. Level base (create once, then inherit)
-`res://levels/level_base/level_base.tscn` + `level_base.gd` (`class_name Level`). Every level is an **inherited scene** of it.
+`res://levels/level_base.tscn` + `res://scripts/levels/level_base.gd` (`class_name Level`) (R11). Every level is an **inherited scene** of it.
 
 ```
-Level (Node3D)                 level_base.gd
-├── Environment                WorldEnvironment (shared .tres environment) + DirectionalLight3D
+Level (Node3D)                 scripts/levels/level_base.gd
+├── Environment                WorldEnvironment (shared Environment .tres in res://materials/) + DirectionalLight3D
 ├── Terrain (Node3D)           GridMap (shared MeshLibrary) / MeshInstance3D + StaticBody3D; CSG only for blockout
 ├── NavigationRegion3D         baked navmesh for NPCs / wandering creatures
 ├── Props (Node3D)             instanced prop prefabs
@@ -25,11 +25,11 @@ Level (Node3D)                 level_base.gd
 ├── SpawnPoints (Node3D)       Marker3D children, e.g. PlayerSpawn
 └── Triggers (Node3D)          Area3D-based trigger prefabs (exits, cutscene zones)
 ```
-`level_base.gd` exports: `level_id: StringName`, `music: AudioStream`, and exposes `get_spawn(name) -> Transform3D`. It emits `level_ready` after setup. The player is **not** saved inside the level; the game/level loader instances it at a spawn point.
+`level_base.gd` exports: `level_id: StringName`, `music: AudioStream`, and exposes `get_spawn(name) -> Transform3D`. It emits `level_ready` after setup. (These members are the target API: add each one to `level_base.gd` when a feature first needs it, not up front, R10.) The player is **not** saved inside the level; the game/level loader instances it at a spawn point.
 
 ## 3. Build the new level
-1. Create `res://levels/<level_name>/<level_name>.tscn` inheriting `level_base.tscn`.
-2. Terrain: reuse the shared `MeshLibrary` / environment resources in `res://assets/` (shared by all levels, R1). Collision lives on the meshes/library, not added per level.
+1. Create `res://levels/<level_name>.tscn` (flat, no per-level folder, R11) inheriting `level_base.tscn`. It only gets a script (`res://scripts/levels/<level_name>.gd`) if it needs level-specific wiring.
+2. Terrain: reuse the shared `MeshLibrary` and the shared materials / environment `.tres` in `res://materials/` (shared by all levels, R1, R11). Collision lives on the meshes/library, not added per level.
 3. Wild encounters: place `encounter_zone` prefabs; which creatures appear (and at what rate/level) is an `EncounterTable` resource in `res://data/encounters/`, never hard-coded in the level.
 4. Place props and characters **only as instances** under their group nodes. Configure them via their `@export` values; don't edit their internals in the level (no "Editable Children" changes unless it's the only option).
 5. Add a `PlayerSpawn` marker and any named spawns used by exits/doors.
@@ -38,7 +38,8 @@ Level (Node3D)                 level_base.gd
 8. Migrating a Unity scene: read the Unity `.unity` scene / prefabs for layout and content, then rebuild with Godot prefabs. Don't import Unity scene files.
 
 ## 4. Done checklist
-- [ ] Inherits `level_base.tscn`.
+- [ ] Scene is `res://levels/<level_name>.tscn`; any script is `res://scripts/levels/<level_name>.gd`; materials/environment in `res://materials/` (R11).
+- [ ] Inherits `level_base.tscn` (R2).
 - [ ] Every repeated object is an instanced prefab (R2), no inline duplicates.
 - [ ] No logic in the level script beyond wiring; behaviour lives in prefabs/components.
 - [ ] Has `PlayerSpawn`; exits point at existing levels/spawns.

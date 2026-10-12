@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://ui/screens/screen_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="2_menu"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/menu_button.tscn" id="3_button"]
+[ext_resource type="PackedScene" path="res://ui/screens/settings_menu.tscn" id="4_settings"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/confirm_popup.tscn" id="5_popup"]
+[ext_resource type="PackedScene" path="res://prefabs/components/submenu_switcher.tscn" id="6_switcher"]
+
+[node name="PauseMenu" node_paths=PackedStringArray("initial_focus") instance=ExtResource("1_base")]
+process_mode = 3
+visible = false
+script = ExtResource("2_menu")
+initial_focus = NodePath("Dimmer/Margin/MenuColumn/ContinueButton")
+
+[node name="Dimmer" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"DimmerPanel"
+
+[node name="Margin" type="MarginContainer" parent="Dimmer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"ScreenMargin"
+
+[node name="MenuColumn" type="VBoxContainer" parent="Dimmer/Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Margin/MenuColumn"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="TitleSpacer" type="Control" parent="Dimmer/Margin/MenuColumn"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ContinueButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+text = "Continue"
+
+[node name="SettingsButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../ContinueButton")
+text = "Quit to Title"
+
+[node name="SettingsMenu" parent="." instance=ExtResource("4_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="ConfirmPopup" parent="." instance=ExtResource("5_popup")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="SubmenuSwitcher" parent="." node_paths=PackedStringArray("main_column") instance=ExtResource("6_switcher")]
+unique_name_in_owner = true
+main_column = NodePath("../Dimmer/Margin/MenuColumn")

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DisplayOptions" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/display_options.gd" id="1_options"]
+[ext_resource type="Script" path="res://scripts/resources/quality_preset.gd" id="2_preset"]
+[ext_resource type="Resource" path="res://data/settings/quality/quality_low.tres" id="3_low"]
+[ext_resource type="Resource" path="res://data/settings/quality/quality_medium.tres" id="4_medium"]
+[ext_resource type="Resource" path="res://data/settings/quality/quality_high.tres" id="5_high"]
+
+[resource]
+script = ExtResource("1_options")
+resolutions = Array[Vector2i]([Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)])
+fps_caps = PackedInt32Array(30, 60, 120, 144, 0)
+unlimited_fps_label = "Unlimited"
+resolution_format = "%d x %d"
+quality_presets = Array[ExtResource("2_preset")]([ExtResource("3_low"), ExtResource("4_medium"), ExtResource("5_high")])

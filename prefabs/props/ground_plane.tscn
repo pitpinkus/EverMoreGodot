@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/props/block.tscn" id="1_block"]
+[ext_resource type="Material" path="res://materials/ground_material.tres" id="2_ground"]
+
+[node name="GroundPlane" instance=ExtResource("1_block")]
+size = Vector3(64, 1, 64)
+material = ExtResource("2_ground")
+top_at_origin = true

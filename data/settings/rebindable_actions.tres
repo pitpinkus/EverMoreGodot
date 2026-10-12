@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="RebindableActionList" load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/rebindable_action_list.gd" id="1_list"]
+[ext_resource type="Script" path="res://scripts/resources/rebindable_action.gd" id="2_action"]
+
+[sub_resource type="Resource" id="Resource_move_forward"]
+script = ExtResource("2_action")
+action = &"move_forward"
+display_name = "Move forward"
+
+[sub_resource type="Resource" id="Resource_move_back"]
+script = ExtResource("2_action")
+action = &"move_back"
+display_name = "Move back"
+
+[sub_resource type="Resource" id="Resource_move_left"]
+script = ExtResource("2_action")
+action = &"move_left"
+display_name = "Move left"
+
+[sub_resource type="Resource" id="Resource_move_right"]
+script = ExtResource("2_action")
+action = &"move_right"
+display_name = "Move right"
+
+[sub_resource type="Resource" id="Resource_run"]
+script = ExtResource("2_action")
+action = &"run"
+display_name = "Run"
+
+[sub_resource type="Resource" id="Resource_jump"]
+script = ExtResource("2_action")
+action = &"jump"
+display_name = "Jump"
+
+[sub_resource type="Resource" id="Resource_camera_left"]
+script = ExtResource("2_action")
+action = &"camera_left"
+display_name = "Camera left"
+
+[sub_resource type="Resource" id="Resource_camera_right"]
+script = ExtResource("2_action")
+action = &"camera_right"
+display_name = "Camera right"
+
+[sub_resource type="Resource" id="Resource_camera_up"]
+script = ExtResource("2_action")
+action = &"camera_up"
+display_name = "Camera up"
+
+[sub_resource type="Resource" id="Resource_camera_down"]
+script = ExtResource("2_action")
+action = &"camera_down"
+display_name = "Camera down"
+
+[sub_resource type="Resource" id="Resource_camera_zoom_in"]
+script = ExtResource("2_action")
+action = &"camera_zoom_in"
+display_name = "Zoom in"
+
+[sub_resource type="Resource" id="Resource_camera_zoom_out"]
+script = ExtResource("2_action")
+action = &"camera_zoom_out"
+display_name = "Zoom out"
+
+[resource]
+script = ExtResource("1_list")
+actions = Array[ExtResource("2_action")]([SubResource("Resource_move_forward"), SubResource("Resource_move_back"), SubResource("Resource_move_left"), SubResource("Resource_move_right"), SubResource("Resource_run"), SubResource("Resource_jump"), SubResource("Resource_camera_left"), SubResource("Resource_camera_right"), SubResource("Resource_camera_up"), SubResource("Resource_camera_down"), SubResource("Resource_camera_zoom_in"), SubResource("Resource_camera_zoom_out")])
+reserved_actions = Array[StringName]([&"pause"])

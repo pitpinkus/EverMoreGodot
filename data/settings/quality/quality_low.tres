@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="QualityPreset" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/quality_preset.gd" id="1_preset"]
+
+[resource]
+script = ExtResource("1_preset")
+display_name = "Low"
+msaa_3d = 0
+screen_space_aa = 0
+use_taa = false
+directional_shadow_size = 2048
