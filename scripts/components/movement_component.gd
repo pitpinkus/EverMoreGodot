@@ -64,9 +64,28 @@ func compute_velocity(current: Vector3, on_floor: bool, delta: float) -> Vector3
 func step_facing(current_yaw: float, delta: float) -> float:
 	if stats == null:
 		return current_yaw
-	var target_yaw: float = atan2(-_facing_direction.x, -_facing_direction.z)
+	var target_yaw: float = _direction_to_yaw(_facing_direction)
 	var weight: float = 1.0 - exp(-delta / stats.turn_smooth_time)
 	return lerp_angle(current_yaw, target_yaw, weight)
+
+
+## Yaw (radians around +Y) of the direction the character wants to face.
+func get_facing_yaw() -> float:
+	return _direction_to_yaw(_facing_direction)
+
+
+## Sets the wanted facing directly, e.g. when restoring a save.
+func set_facing_yaw(yaw: float) -> void:
+	_facing_direction = _yaw_to_direction(yaw)
+
+
+## Yaw 0 faces Vector3.FORWARD (-Z).
+static func _direction_to_yaw(direction: Vector3) -> float:
+	return atan2(-direction.x, -direction.z)
+
+
+static func _yaw_to_direction(yaw: float) -> Vector3:
+	return Vector3(-sin(yaw), 0.0, -cos(yaw))
 
 
 func _get_horizontal_rate(on_floor: bool) -> float:

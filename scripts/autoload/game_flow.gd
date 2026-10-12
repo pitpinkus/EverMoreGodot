@@ -5,25 +5,23 @@ const START_LEVEL_PATH: String = "res://levels/test_overworld.tscn"
 const TITLE_SCREEN_PATH: String = "res://ui/screens/title_screen.tscn"
 
 
-## Starts a new game at START_LEVEL_PATH.
-## Hook: once saving exists, SaveSystem creates the new save slot here.
+## Starts a new game at START_LEVEL_PATH in a fresh save slot.
 func start_new_game() -> void:
-	_change_scene(START_LEVEL_PATH)
+	SaveSystem.begin_new_game(START_LEVEL_PATH)
+	_change_scene_or_end_session(START_LEVEL_PATH)
 
 
-## Continues from a save slot.
-## Hook: SaveSystem will restore the slot's level, spawn point and state here;
-## until then every slot opens START_LEVEL_PATH.
+## Continues from a save slot: opens its level; SaveSystem restores the saved state.
 func load_game(slot: SaveSlotInfo) -> void:
-	if slot == null:
-		push_error("GameFlow: load_game() called without a save slot.")
+	if not SaveSystem.begin_load(slot):
 		return
-	_change_scene(START_LEVEL_PATH)
+	_change_scene_or_end_session(SaveSystem.get_active_level_path())
 
 
 ## Leaves the current game (unpausing first) and shows the title screen.
 func go_to_title_screen() -> void:
 	resume_game()
+	SaveSystem.end_session()
 	_change_scene(TITLE_SCREEN_PATH)
 
 
@@ -40,7 +38,14 @@ func quit_game() -> void:
 	get_tree().quit()
 
 
-func _change_scene(path: String) -> void:
+func _change_scene(path: String) -> Error:
 	var error: Error = get_tree().change_scene_to_file(path)
 	if error != OK:
 		push_error("GameFlow: could not open '%s' (%s)." % [path, error_string(error)])
+	return error
+
+
+## Drops the just-started save session if its level cannot be opened.
+func _change_scene_or_end_session(path: String) -> void:
+	if _change_scene(path) != OK:
+		SaveSystem.end_session()

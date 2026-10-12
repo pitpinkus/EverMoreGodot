@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/components/player_state_machine.gd" id="1_machine"]
+[ext_resource type="Script" path="res://scripts/characters/player_idle_state.gd" id="2_idle"]
+[ext_resource type="Script" path="res://scripts/characters/player_move_state.gd" id="3_move"]
+[ext_resource type="Script" path="res://scripts/characters/player_air_state.gd" id="4_air"]
+
+[node name="PlayerStateMachine" type="Node" node_paths=PackedStringArray("initial_state")]
+script = ExtResource("1_machine")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="."]
+script = ExtResource("2_idle")
+
+[node name="Walk" type="Node" parent="."]
+script = ExtResource("3_move")
+
+[node name="Run" type="Node" parent="."]
+script = ExtResource("3_move")
+
+[node name="Jump" type="Node" parent="."]
+script = ExtResource("4_air")
+
+[node name="Fall" type="Node" parent="."]
+script = ExtResource("4_air")

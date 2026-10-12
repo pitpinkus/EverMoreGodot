@@ -3,6 +3,8 @@ extends Node3D
 ## Base for every map. Holds the standard layer nodes and, until a level loader
 ## exists, spawns the player at a named Marker3D under %SpawnPoints.
 
+## Name shown to the player, e.g. in save slots.
+@export var display_name: String = ""
 @export var player_scene: PackedScene
 @export var player_spawn: StringName = &"PlayerSpawn"
 

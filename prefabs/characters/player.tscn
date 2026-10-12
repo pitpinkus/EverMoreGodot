@@ -1,19 +1,26 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://2upfayjqn7xw"]
 
 [ext_resource type="PackedScene" path="res://prefabs/characters/character_base.tscn" id="1_base"]
 [ext_resource type="PackedScene" path="res://prefabs/components/third_person_camera.tscn" id="2_camera"]
 [ext_resource type="PackedScene" path="res://prefabs/components/player_input_component.tscn" id="3_input"]
+[ext_resource type="PackedScene" path="res://prefabs/components/player_state_machine.tscn" id="4_machine"]
 
-[node name="Player" groups=["player"] instance=ExtResource("1_base")]
+[node name="Player" unique_id=1048645077 groups=["player"] instance=ExtResource("1_base")]
+save_key = &"player"
 
-[node name="CameraRig" parent="." instance=ExtResource("2_camera")]
+[node name="CameraRig" parent="." index="3" unique_id=1660953832 instance=ExtResource("2_camera")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="PlayerInputComponent" parent="." node_paths=PackedStringArray("camera_pivot") instance=ExtResource("3_input")]
+[node name="PlayerInputComponent" parent="." index="4" unique_id=213274447 node_paths=PackedStringArray("camera_pivot") instance=ExtResource("3_input")]
 camera_pivot = NodePath("../CameraRig")
 
-[connection signal="move_requested" from="PlayerInputComponent" to="." method="move"]
-[connection signal="jump_requested" from="PlayerInputComponent" to="." method="jump"]
+[node name="PlayerStateMachine" parent="." index="5" unique_id=2048921929 node_paths=PackedStringArray("character") instance=ExtResource("4_machine")]
+character = NodePath("..")
+
+[connection signal="jump_requested" from="PlayerInputComponent" to="PlayerStateMachine" method="request_jump"]
 [connection signal="look_requested" from="PlayerInputComponent" to="CameraRig" method="rotate_view"]
+[connection signal="move_requested" from="PlayerInputComponent" to="PlayerStateMachine" method="set_move_intent"]
 [connection signal="zoom_requested" from="PlayerInputComponent" to="CameraRig" method="zoom"]
+[connection signal="jump_requested" from="PlayerStateMachine" to="." method="jump"]
+[connection signal="move_requested" from="PlayerStateMachine" to="." method="move"]

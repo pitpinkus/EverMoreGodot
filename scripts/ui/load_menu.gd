@@ -5,6 +5,8 @@ extends ScreenBase
 ## Scene instanced once per save slot; its root must be a SaveSlotRow.
 @export var slot_row_scene: PackedScene
 @export_multiline var empty_text: String = "No saved games"
+## Shown in %EmptyLabel when the chosen slot cannot be loaded; the menu stays open.
+@export_multiline var load_failed_text: String = "This save could not be loaded"
 
 @onready var _slot_list: VBoxContainer = %SlotList
 @onready var _empty_label: Label = %EmptyLabel
@@ -16,6 +18,7 @@ func _ready() -> void:
 	_empty_label.text = empty_text
 	_back_button.pressed.connect(close)
 	back_requested.connect(close)
+	SaveSystem.load_failed.connect(_on_load_failed)
 
 
 ## Rebuilds the slot list, then shows the menu.
@@ -35,6 +38,7 @@ func _rebuild_slots() -> void:
 		_slot_list.remove_child(child)
 		child.queue_free()
 	var saves: Array[SaveSlotInfo] = SaveSystem.list_saves()
+	_empty_label.text = empty_text
 	_empty_label.visible = saves.is_empty()
 	if slot_row_scene == null:
 		if not saves.is_empty():
@@ -48,3 +52,10 @@ func _rebuild_slots() -> void:
 		_slot_list.add_child(row)
 		row.setup(info)
 		row.slot_selected.connect(GameFlow.load_game)
+
+
+func _on_load_failed(_slot_id: String, _error: Error) -> void:
+	if not is_visible_in_tree():
+		return
+	_empty_label.text = load_failed_text
+	_empty_label.visible = true

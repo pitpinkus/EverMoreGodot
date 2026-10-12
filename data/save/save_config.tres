@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="SaveConfig" format=3 uid="uid://cg4can4smf0my"]
+
+[ext_resource type="Script" uid="uid://dgf1n67ij56pg" path="res://scripts/resources/save_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+encrypt = false
+encryption_password = "evermore-wilds-save-key"

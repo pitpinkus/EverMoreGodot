@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://prefabs/props/block.tscn" id="4_block"]
 
 [node name="TestOverworld" instance=ExtResource("1_level")]
+display_name = "Test Overworld"
 player_scene = ExtResource("2_player")
 
 [node name="GroundPlane" parent="Terrain" instance=ExtResource("3_ground")]
