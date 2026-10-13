@@ -162,3 +162,70 @@ ui_tab_prev={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[shader_globals]
+
+toon_band_count={
+"type": "float",
+"value": 2.0
+}
+toon_band_softness={
+"type": "float",
+"value": 0.02
+}
+toon_shadow_tint={
+"type": "color",
+"value": Color(0.45, 0.42, 0.62, 1)
+}
+toon_specular_size={
+"type": "float",
+"value": 0.06
+}
+toon_specular_strength={
+"type": "float",
+"value": 0.6
+}
+toon_rim_color={
+"type": "color",
+"value": Color(1, 0.95, 0.85, 1)
+}
+toon_rim_strength={
+"type": "float",
+"value": 0.3
+}
+toon_rim_width={
+"type": "float",
+"value": 0.25
+}
+toon_outline_color={
+"type": "color",
+"value": Color(0.12, 0.08, 0.06, 1)
+}
+toon_outline_width={
+"type": "float",
+"value": 2.5
+}
+toon_ink_width={
+"type": "float",
+"value": 1.0
+}
+toon_ink_depth_threshold={
+"type": "float",
+"value": 0.1
+}
+toon_ink_normal_threshold={
+"type": "float",
+"value": 0.5
+}
+toon_ink_color_tint={
+"type": "float",
+"value": 0.35
+}
+toon_ink_darken={
+"type": "float",
+"value": 0.35
+}
+toon_ink_max_distance={
+"type": "float",
+"value": 120.0
+}

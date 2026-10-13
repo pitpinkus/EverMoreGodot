@@ -4,9 +4,13 @@
 [ext_resource type="PackedScene" path="res://prefabs/components/third_person_camera.tscn" id="2_camera"]
 [ext_resource type="PackedScene" path="res://prefabs/components/player_input_component.tscn" id="3_input"]
 [ext_resource type="PackedScene" path="res://prefabs/components/player_state_machine.tscn" id="4_machine"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/earth_traveler_model.tscn" id="5_model"]
+[ext_resource type="PackedScene" path="res://prefabs/components/animation_component.tscn" id="6_animation"]
 
 [node name="Player" unique_id=1048645077 groups=["player"] instance=ExtResource("1_base")]
 save_key = &"player"
+
+[node name="EarthTravelerModel" parent="Visual" index="0" unique_id=1001529750 instance=ExtResource("5_model")]
 
 [node name="CameraRig" parent="." index="3" unique_id=1660953832 instance=ExtResource("2_camera")]
 unique_name_in_owner = true
@@ -18,9 +22,13 @@ camera_pivot = NodePath("../CameraRig")
 [node name="PlayerStateMachine" parent="." index="5" unique_id=2048921929 node_paths=PackedStringArray("character") instance=ExtResource("4_machine")]
 character = NodePath("..")
 
+[node name="AnimationComponent" parent="." index="6" unique_id=634314480 node_paths=PackedStringArray("animation_player") instance=ExtResource("6_animation")]
+animation_player = NodePath("../Visual/EarthTravelerModel/EarthTraveler/AnimationPlayer")
+
 [connection signal="jump_requested" from="PlayerInputComponent" to="PlayerStateMachine" method="request_jump"]
 [connection signal="look_requested" from="PlayerInputComponent" to="CameraRig" method="rotate_view"]
 [connection signal="move_requested" from="PlayerInputComponent" to="PlayerStateMachine" method="set_move_intent"]
 [connection signal="zoom_requested" from="PlayerInputComponent" to="CameraRig" method="zoom"]
 [connection signal="jump_requested" from="PlayerStateMachine" to="." method="jump"]
 [connection signal="move_requested" from="PlayerStateMachine" to="." method="move"]
+[connection signal="state_changed" from="PlayerStateMachine" to="AnimationComponent" method="_on_state_changed"]

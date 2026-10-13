@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/earth_traveler/earth_traveler.gltf" id="1_model"]
+[ext_resource type="Material" path="res://materials/traveler_eyebrows.tres" id="2_eyebrows"]
+[ext_resource type="Material" path="res://materials/traveler_eyes.tres" id="3_eyes"]
+[ext_resource type="Material" path="res://materials/traveler_skin.tres" id="4_skin"]
+[ext_resource type="Material" path="res://materials/traveler_outfit.tres" id="5_outfit"]
+[ext_resource type="Material" path="res://materials/traveler_arm_skin.tres" id="6_arm_skin"]
+[ext_resource type="Material" path="res://materials/traveler_hair.tres" id="7_hair"]
+
+[node name="EarthTravelerModel" type="Node3D"]
+
+[node name="EarthTraveler" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Eyebrows" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("2_eyebrows")
+
+[node name="Eyes" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("3_eyes")
+
+[node name="SuperHero_Male" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("4_skin")
+
+[node name="Male_Peasant_Arms" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("5_outfit")
+surface_material_override/1 = ExtResource("6_arm_skin")
+
+[node name="Male_Peasant_Body" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("5_outfit")
+
+[node name="Male_Peasant_Feet" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("5_outfit")
+
+[node name="Male_Peasant_Legs" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("5_outfit")
+
+[node name="Hair_Buns" parent="EarthTraveler/Armature/Skeleton3D"]
+surface_material_override/0 = ExtResource("7_hair")
+
+[editable path="EarthTraveler"]

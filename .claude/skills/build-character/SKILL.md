@@ -16,14 +16,18 @@ All characters share **one base prefab** and are differentiated by **components*
 `res://prefabs/characters/character_base.tscn` + `res://scripts/characters/character_base.gd` (`class_name Character`) (R11):
 ```
 Character (CharacterBody3D)    scripts/characters/character_base.gd — movement API only: move(direction), stop(), face(dir)
-├── Visual                     instanced model scene (.glb) — swapped per character via export/inheritance
+├── Visual                     empty Node3D in the base; variants instance a model prefab here
 ├── CollisionShape
-├── AnimationPlayer / AnimationTree
 ├── HealthComponent            emits health_changed, died
 ├── HurtboxComponent           receives damage → HealthComponent
-├── StateMachine               child State nodes; each state is its own script
+├── (variant) StateMachine     added by variants (e.g. player.tscn), not the base; child State nodes, each its own script; emits state_changed(from, to)
+├── (variant) AnimationComponent  added by variants alongside StateMachine; prefabs/components/animation_component.tscn
 └── (optional) NavigationAgent, InteractableComponent, HitboxComponent
 ```
+- **Models are separate visual prefabs** (e.g. `prefabs/characters/earth_traveler_model.tscn`): an imported or primitive-built model plus its own `AnimationPlayer`. `character_base.tscn` has no model and no AnimationPlayer of its own; a variant instances a model prefab under `Visual`. Reuse an existing model prefab before making a new one (R1, R2).
+- **Imported models:** a wrapper prefab in `prefabs/characters/` instances the asset from `res://assets/` (e.g. `assets/characters/earth_traveler/earth_traveler.gltf`), rotates it to face -Z, and applies toon materials via `surface_material_override`. Name the clips after the state names; a `_loop` suffix in the source file makes Godot import the clip as looping and strips the suffix.
+- **Toon materials:** each surface colour is a `ShaderMaterial` `.tres` in `res://materials/` using `res://materials/shaders/toon_lit.gdshader`, setting only `shader_parameter/albedo` (optionally `albedo_texture`, `specular_amount`, `rim_amount`). Body materials set `rim_amount = 1.0`; small details such as eyes leave it at 0. Reuse an existing material before adding one (R1). Character and creature materials set `next_pass = res://materials/toon_outline.tres` (inverted-hull outline). Shared look tunables are the `toon_*` global uniforms in `project.godot` `[shader_globals]`; never hard-code them in a material (R6). Shaders live only in `res://materials/shaders/`.
+- **Animation is driven by `AnimationComponent`**, which is model-agnostic: in the character scene, connect `StateMachine.state_changed(from, to)` to its `_on_state_changed` and set its `animation_player` export to the model's `AnimationPlayer`. It plays the animation named like the new state; use its `animation_overrides` Dictionary (state name → animation name) when names differ, and its `blend_time` export for cross-fades.
 - `@export var data: CharacterData` — a `Resource` (class in `res://scripts/resources/character_data.gd`, instances in `res://data/characters/*.tres`) with name, portrait, max_health, speed, faction, etc. **All stats come from here** (R6).
 - `StateMachine` + `State` base class live in `res://scripts/components/` (`state_machine.gd`, `state.gd`) and are shared by player, NPCs and enemies. Individual state scripts go in `res://scripts/characters/` (or `scripts/components/` if not character-specific).
 
@@ -43,7 +47,7 @@ A specific character (e.g. "Blacksmith", "Slime") is usually **just a `.tres` Ch
 
 ## 4. Rules for character code
 - Input only in the `PlayerInputComponent`; AI only in states. It reads actions only, so keyboard and gamepad behave the same; analog actions (move, camera) use `Input.get_vector()` / `get_axis()` so sticks get proportional input. Mouse look is an extra on top of the camera actions, never the only way (R7, R12). The base script knows nothing about either.
-- Animations are chosen from state (`state.enter()` plays its animation), not scattered `play()` calls.
+- States contain **no animation code**: name states after their animation (or add an `animation_overrides` entry) and let `AnimationComponent` play it. No `play()` calls in states, character scripts or other components.
 - Characters announce events via signals (`died`, `interacted`, `attacked`). Global reactions (quest progress, score, dialog UI) go through `EventBus` (R4).
 - Dialog content lives in `Dialog` / `DialogLine` Resources in `res://data/dialog/`, shared with the `dialog_box` UI prefab (see `build-ui`).
 
@@ -52,5 +56,7 @@ A specific character (e.g. "Blacksmith", "Slime") is usually **just a `.tres` Ch
 - [ ] Inherits `character_base` (directly or via player/npc/enemy) (R2).
 - [ ] Stats from `CharacterData` resource; no hard-coded numbers (R6).
 - [ ] Reuses shared components and `StateMachine`; no duplicated movement/health/AI code (R1, R3).
+- [ ] Model is an instanced model prefab under `Visual`; animation only via `AnimationComponent` wired to `state_changed`, no `play()` in states (R1, R2, R3, R4).
+- [ ] Surface materials are `toon_lit` ShaderMaterials in `res://materials/` (only albedo / albedo_texture / specular_amount / rim_amount set; `rim_amount = 1.0` on body materials, 0 on small details like eyes) with `next_pass = toon_outline.tres`; existing ones reused; no `toon_*` global tunables hard-coded (R1, R6, R11).
 - [ ] Player input via actions only (R7); every action used has keyboard and joypad bindings, nothing mouse-only (R12).
 - [ ] Works when instanced into any level (no paths to level nodes).

@@ -85,6 +85,7 @@ Files are separated by **type** into top-level folders (see Folder layout below)
 - **`.tscn` files live only in `res://prefabs/<category>/`, `res://levels/` or `res://ui/screens/`.** Prefabs and levels are **flat files** per category: `prefabs/props/block.tscn`, `levels/test_overworld.tscn`. No per-item subfolder (no `prefabs/props/block/block.tscn`).
 - A scene's root script keeps the **same snake_case base name** as the scene, under the matching domain: `prefabs/props/block.tscn` ↔ `scripts/props/block.gd`, `levels/level_base.tscn` ↔ `scripts/levels/level_base.gd`. Inherited variants without their own script (e.g. `player.tscn`) are fine.
 - Content/stats `.tres` go in `res://data/` (category subfolders allowed, e.g. `data/movement/`). Materials, environments and other visual `.tres` go in `res://materials/`. The theme stays in `res://ui/theme/`.
+- **Shader files (`.gdshader`, `.gdshaderinc`) live only in `res://materials/shaders/`.**
 - Engine-generated `*.gd.uid` files stay next to their `.gd` and move with it.
 
 ### R12 — Keyboard and controller support
@@ -126,5 +127,6 @@ res://
     theme/              main_theme.tres + fonts/styleboxes
   data/                 .tres content/stats (category subfolders allowed, e.g. data/movement/)
   materials/            Material / Environment / other visual .tres
+    shaders/            ALL .gdshader / .gdshaderinc (toon_lit.gdshader, toon_common.gdshaderinc, ...)
   assets/               imported art, audio, fonts
 ```

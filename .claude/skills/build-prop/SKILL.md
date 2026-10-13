@@ -29,7 +29,7 @@ PropName (root body/area)       scripts/props/prop_name.gd (only if it has behav
 ```
 - Behaviour shared with other props → a component (`res://scripts/components/`, scene in `res://prefabs/components/` if needed) (R3), not code in the prop script.
 - Configurable values (`@export`): size, speed, item given, damage, `one_way`, etc. No magic numbers (R6).
-- Materials → `res://materials/*.tres`, shared between props instead of per-prop sub_resources when reused (R1, R11).
+- Materials → `res://materials/*.tres`, shared between props instead of per-prop sub_resources when reused (R1, R11). A new surface colour is a `ShaderMaterial` using `res://materials/shaders/toon_lit.gdshader` that sets only `shader_parameter/albedo` (optionally `albedo_texture`, `specular_amount`, `rim_amount`). Props and terrain leave `rim_amount` at its default 0: on large flat surfaces the rim term draws an arc around the camera. **No `next_pass` outline on props**: the level's screen-space ink outline handles them. Shared look tunables are the `toon_*` global uniforms in `project.godot` `[shader_globals]`; don't hard-code them in materials (R6). Shaders live only in `res://materials/shaders/`. A transparent toon surface needs a separate shader: when that happens, move `light()` into `res://materials/shaders/toon_lighting.gdshaderinc` and include it from both shaders (R1).
 - Item / loot content → `ItemData` Resource (class in `res://scripts/resources/item_data.gd`, content in `res://data/items/*.tres`); the pickup prefab has `@export var item: ItemData`.
 - Emit signals for things the world cares about (`opened`, `collected`, `activated`, `destroyed`); never reach into the level or player with paths (R4). To find the player, use groups (`"player"`) or the body that entered.
 - Set collision layer/mask using the named physics layers in Project Settings.
@@ -44,5 +44,6 @@ Variants are inherited scenes, flat in the same folder: `prefabs/props/platform.
 - [ ] Reuses existing components; no logic duplicated from another prop (R1).
 - [ ] Variants are inherited scenes (R2).
 - [ ] All tunables exported; content in Resources (R6).
+- [ ] Materials are shared `toon_lit` ShaderMaterials in `res://materials/` with `rim_amount` left at 0, no `next_pass` hull and no hard-coded `toon_*` globals (R1, R6, R11).
 - [ ] Talks outward only via signals / groups (R4).
 - [ ] Interactions work through actions with keyboard and joypad bindings (R7, R12).

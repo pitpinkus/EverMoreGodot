@@ -1,0 +1,10 @@
+Earth Traveler character - assembled from free assets by Quaternius (https://quaternius.com)
+License: CC0 1.0 Universal (public domain) - https://creativecommons.org/publicdomain/zero/1.0/
+
+Source packs (Standard/free versions):
+- Universal Base Characters      (Superhero_Male head/body, eyes, eyebrows, Hair_Buns)
+- Modular Character Outfits - Fantasy (Male_Peasant outfit)
+- Universal Animation Library    (Idle, Walk, Jog_Fwd -> Run, Jump_Start -> Jump, Jump -> Fall)
+
+Changes: base body reduced to the parts the outfit leaves bare (head, neck, forearms, hands), parts merged onto one skeleton,
+textures reduced to base colour at 1024 px, clips renamed (suffix _loop = imported as looping).

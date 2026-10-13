@@ -1,6 +1,12 @@
 [gd_resource type="Environment" format=3]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_default"]
+sky_top_color = Color(0.56, 0.8, 0.9, 1)
+sky_horizon_color = Color(0.98, 0.93, 0.82, 1)
+ground_bottom_color = Color(0.62, 0.66, 0.6, 1)
+ground_horizon_color = Color(0.98, 0.93, 0.82, 1)
+sun_angle_max = 6.0
+sun_curve = 0.3
 
 [sub_resource type="Sky" id="Sky_default"]
 sky_material = SubResource("ProceduralSkyMaterial_default")
@@ -8,6 +14,17 @@ sky_material = SubResource("ProceduralSkyMaterial_default")
 [resource]
 background_mode = 2
 sky = SubResource("Sky_default")
-ambient_light_source = 3
-reflected_light_source = 2
-tonemap_mode = 2
+ambient_light_source = 2
+ambient_light_color = Color(0.68, 0.7, 0.9, 1)
+ambient_light_energy = 0.35
+reflected_light_source = 1
+tonemap_mode = 0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.98, 0.93, 0.82, 1)
+fog_sky_affect = 0.0
+fog_depth_begin = 40.0
+fog_depth_end = 220.0
+adjustment_enabled = true
+adjustment_contrast = 1.05
+adjustment_saturation = 1.15

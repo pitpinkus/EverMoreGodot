@@ -17,6 +17,7 @@ A level is a **composition of prefabs**. It owns layout and wiring only; it shou
 ```
 Level (Node3D)                 scripts/levels/level_base.gd
 ├── Environment                WorldEnvironment (shared Environment .tres in res://materials/) + DirectionalLight3D
+│   └── ScreenInkOutline       instance of prefabs/components/screen_ink_outline.tscn (screen-space toon outline)
 ├── Terrain (Node3D)           GridMap (shared MeshLibrary) / MeshInstance3D + StaticBody3D; CSG only for blockout
 ├── NavigationRegion3D         baked navmesh for NPCs / wandering creatures
 ├── Props (Node3D)             instanced prop prefabs
@@ -29,7 +30,7 @@ Level (Node3D)                 scripts/levels/level_base.gd
 
 ## 3. Build the new level
 1. Create `res://levels/<level_name>.tscn` (flat, no per-level folder, R11) inheriting `level_base.tscn`. It only gets a script (`res://scripts/levels/<level_name>.gd`) if it needs level-specific wiring.
-2. Terrain: reuse the shared `MeshLibrary` and the shared materials / environment `.tres` in `res://materials/` (shared by all levels, R1, R11). Collision lives on the meshes/library, not added per level.
+2. Terrain: reuse the shared `MeshLibrary` and the shared materials / environment `.tres` in `res://materials/` (shared by all levels, R1, R11). Collision lives on the meshes/library, not added per level. New surface colours follow the toon material recipe in `build-prop` (`toon_lit` ShaderMaterial, `rim_amount` left at 0); terrain gets no `next_pass` hull, since the ink outline comes from `level_base` (don't add a second one). Look tunables are `toon_*` globals in `project.godot` `[shader_globals]`, not per-material values (R6).
 3. Wild encounters: place `encounter_zone` prefabs; which creatures appear (and at what rate/level) is an `EncounterTable` resource in `res://data/encounters/`, never hard-coded in the level.
 4. Place props and characters **only as instances** under their group nodes. Configure them via their `@export` values; don't edit their internals in the level (no "Editable Children" changes unless it's the only option).
 5. Add a `PlayerSpawn` marker and any named spawns used by exits/doors.
@@ -39,7 +40,7 @@ Level (Node3D)                 scripts/levels/level_base.gd
 
 ## 4. Done checklist
 - [ ] Scene is `res://levels/<level_name>.tscn`; any script is `res://scripts/levels/<level_name>.gd`; materials/environment in `res://materials/` (R11).
-- [ ] Inherits `level_base.tscn` (R2).
+- [ ] Inherits `level_base.tscn` (R2), so it gets the screen ink outline; no extra outline instance or hull materials (R1).
 - [ ] Every repeated object is an instanced prefab (R2), no inline duplicates.
 - [ ] No logic in the level script beyond wiring; behaviour lives in prefabs/components.
 - [ ] Has `PlayerSpawn`; exits point at existing levels/spawns.

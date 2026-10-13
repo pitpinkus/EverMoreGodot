@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/toon_lit.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/characters/earth_traveler/textures/MI_Hair_1_albedo.png" id="2_albedo"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/albedo = Color(0.16, 0.11, 0.08, 1)
+shader_parameter/albedo_texture = ExtResource("2_albedo")
