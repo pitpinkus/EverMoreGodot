@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/vfx/one_shot_vfx.tscn" id="1_base"]
+[ext_resource type="Material" path="res://materials/vfx_spark_particle.tres" id="2_material"]
+[ext_resource type="Texture2D" path="res://materials/vfx_fade_out_curve.tres" id="3_fade"]
+
+[sub_resource type="Gradient" id="Gradient_fx"]
+offsets = PackedFloat32Array(0, 0.2, 1)
+colors = PackedColorArray(1, 0.9, 0.5, 0, 1, 0.82, 0.3, 1, 1, 0.75, 0.2, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fx"]
+gradient = SubResource("Gradient_fx")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fx"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 1, 0)
+spread = 8.0
+initial_velocity_min = 1.5
+initial_velocity_max = 2.2
+gravity = Vector3(0, 0, 0)
+damping_min = 0.0
+damping_max = 0.0
+scale_min = 1.0
+scale_max = 1.0
+scale_curve = ExtResource("3_fade")
+color_ramp = SubResource("GradientTexture1D_fx")
+
+[sub_resource type="QuadMesh" id="QuadMesh_fx"]
+material = ExtResource("2_material")
+size = Vector2(0.18, 0.18)
+
+[node name="StatUpAuraVfx" instance=ExtResource("1_base")]
+editor_description = "Gold motes rising: a stat went up."
+lifetime = 1.2
+
+[node name="Particles" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+amount = 20
+lifetime = 0.9
+explosiveness = 0.7
+process_material = SubResource("ParticleProcessMaterial_fx")
+draw_pass_1 = SubResource("QuadMesh_fx")

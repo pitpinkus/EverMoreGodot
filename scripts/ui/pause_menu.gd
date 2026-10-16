@@ -1,7 +1,8 @@
 class_name PauseMenu
 extends ScreenBase
-## In-game pause menu. The pause action opens it (pausing the tree) and closes it
-## again when no submenu is open. Continue, Save, Settings, Quit to title screen.
+## In-game pause menu. The pause action opens it and closes it again when no submenu
+## is open. Continue, Save, Settings, Quit to title screen. Pausing the tree and
+## restoring the mouse is done by its PauseWhileVisibleComponent child.
 ## The scene root must use process_mode ALWAYS so it works while paused.
 
 @export_multiline var quit_message: String = "Quit to the title screen? Unsaved progress will be lost."
@@ -9,9 +10,6 @@ extends ScreenBase
 @export var saved_text: String = "Game saved"
 ## Shown in %SaveStatusLabel when saving fails.
 @export var save_failed_text: String = "Save failed"
-
-## Mouse mode before pausing, restored on resume.
-var _resume_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
 
 @onready var _continue_button: Button = %ContinueButton
 @onready var _save_button: Button = %SaveButton
@@ -35,22 +33,18 @@ func _ready() -> void:
 	back_requested.connect(resume)
 
 
-## Pauses the game and shows the menu.
+## Shows the menu (which pauses the game).
 func open() -> void:
-	_resume_mouse_mode = Input.mouse_mode
-	GameFlow.pause_game()
 	_save_button.disabled = not SaveSystem.can_save()
 	# A disabled button must not take keyboard/gamepad focus; VBox order skips it.
-	_save_button.focus_mode = Control.FOCUS_NONE if _save_button.disabled else Control.FOCUS_ALL
+	FocusUtils.set_focusable(_save_button, not _save_button.disabled)
 	_save_status_label.text = ""
 	super()
 
 
-## Hides the menu and unpauses the game.
+## Hides the menu (which unpauses the game).
 func resume() -> void:
 	close()
-	GameFlow.resume_game()
-	Input.mouse_mode = _resume_mouse_mode
 
 
 func _unhandled_input(event: InputEvent) -> void:

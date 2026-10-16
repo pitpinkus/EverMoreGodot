@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattleAIProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/battle_ai_profile.gd" id="1_battle_ai_profile"]
+
+[resource]
+script = ExtResource("1_battle_ai_profile")
+think_delay = 0.9
+heal_threshold = 0.35
+range_margin = 0.9
+use_stat_moves = true
+max_self_stage = 2

@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://ui/screens/screen_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/ui/inventory_screen.gd" id="2_screen"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/choice_list_panel.tscn" id="3_list"]
+[ext_resource type="PackedScene" path="res://prefabs/components/pause_while_visible_component.tscn" id="4_pause"]
+
+[node name="InventoryScreen" instance=ExtResource("1_base")]
+process_mode = 3
+visible = false
+script = ExtResource("2_screen")
+
+[node name="Dimmer" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"DimmerPanel"
+
+[node name="Margin" type="MarginContainer" parent="Dimmer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"ScreenMargin"
+
+[node name="Content" type="VBoxContainer" parent="Dimmer/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "Inventory"
+horizontal_alignment = 1
+
+[node name="Lists" type="HBoxContainer" parent="Dimmer/Margin/Content"]
+layout_mode = 2
+alignment = 1
+
+[node name="ItemList" parent="Dimmer/Margin/Content/Lists" instance=ExtResource("3_list")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PartyList" parent="Dimmer/Margin/Content/Lists" instance=ExtResource("3_list")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="Dimmer/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PauseWhileVisibleComponent" parent="." node_paths=PackedStringArray("screen") instance=ExtResource("4_pause")]
+screen = NodePath("..")

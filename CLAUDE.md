@@ -81,7 +81,7 @@ No commented-out code, unused variables, unused exports, or leftover `print()` d
 
 ### R11 — File structure by type
 Files are separated by **type** into top-level folders (see Folder layout below):
-- **All `.gd` files live under `res://scripts/<domain>/`** (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`). No `.gd` anywhere else. Custom `Resource` class scripts go in `scripts/resources/`.
+- **All `.gd` files live under `res://scripts/<domain>/`** (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`, `battle`, `vfx`). No `.gd` anywhere else. Custom `Resource` class scripts go in `scripts/resources/`.
 - **`.tscn` files live only in `res://prefabs/<category>/`, `res://levels/` or `res://ui/screens/`.** Prefabs and levels are **flat files** per category: `prefabs/props/block.tscn`, `levels/test_overworld.tscn`. No per-item subfolder (no `prefabs/props/block/block.tscn`).
 - A scene's root script keeps the **same snake_case base name** as the scene, under the matching domain: `prefabs/props/block.tscn` ↔ `scripts/props/block.gd`, `levels/level_base.tscn` ↔ `scripts/levels/level_base.gd`. Inherited variants without their own script (e.g. `player.tscn`) are fine.
 - Content/stats `.tres` go in `res://data/` (category subfolders allowed, e.g. `data/movement/`). Materials, environments and other visual `.tres` go in `res://materials/`. The theme stays in `res://ui/theme/`.
@@ -116,11 +116,14 @@ res://
     levels/             level_base.gd, ...
     ui/                 UI scripts (widgets and screens)
     resources/          custom Resource class scripts (movement_stats.gd, ...)
+    battle/             battle logic: manager, controllers/AI, turn order, formulas
+    vfx/                visual effect scripts: projectiles, one-shot particle effects, floating text
   prefabs/              ALL reusable .tscn, flat files per category (no per-item folder)
     components/         movement_component.tscn, ...
     characters/         character_base.tscn, player.tscn, ...
     props/              block.tscn, ground_plane.tscn, ...
     ui/                 buttons, panels, dialog box, popups, ...
+    vfx/                VFX prefab scenes (projectiles, particle effects, floating text, ...)
   levels/               ALL level/map .tscn, flat (level_base.tscn, test_overworld.tscn, ...)
   ui/
     screens/            screen .tscn (main menu, pause, settings, HUD, ...)

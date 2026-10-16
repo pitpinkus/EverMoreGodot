@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="SpeciesData" format=3]
+
+[ext_resource type="Resource" path="res://data/moves/tackle.tres" id="1_tackle"]
+[ext_resource type="Script" path="res://scripts/resources/learnset_entry.gd" id="2_learnset_entry"]
+[ext_resource type="Resource" path="res://data/moves/armor_up.tres" id="3_armor_up"]
+[ext_resource type="Resource" path="res://data/moves/heal_pulse.tres" id="4_heal_pulse"]
+[ext_resource type="Resource" path="res://data/moves/growl.tres" id="5_growl"]
+[ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="6_species_data"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_moss.tscn" id="7_model"]
+[ext_resource type="Resource" path="res://data/moves/chill_gaze.tres" id="8_chill_gaze"]
+
+[sub_resource type="Resource" id="Resource_learn_tackle"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("1_tackle")
+level = 1
+
+[sub_resource type="Resource" id="Resource_learn_armor_up"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("3_armor_up")
+level = 1
+
+[sub_resource type="Resource" id="Resource_learn_heal_pulse"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("4_heal_pulse")
+level = 3
+
+[sub_resource type="Resource" id="Resource_learn_chill_gaze"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("8_chill_gaze")
+level = 4
+
+[sub_resource type="Resource" id="Resource_learn_growl"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("5_growl")
+level = 8
+
+[resource]
+script = ExtResource("6_species_data")
+id = &"mosshell"
+display_name = "Mosshell"
+element = 3
+base_hp = 65
+base_attack = 45
+base_defense = 65
+base_speed = 40
+base_crit_rate = 5
+base_crit_mod = 50
+base_dodge = 5
+base_steps = 4.0
+catch_rate = 0.35
+learnset = Array[ExtResource("2_learnset_entry")]([SubResource("Resource_learn_tackle"), SubResource("Resource_learn_armor_up"), SubResource("Resource_learn_heal_pulse"), SubResource("Resource_learn_chill_gaze"), SubResource("Resource_learn_growl")])
+model_scene = ExtResource("7_model")

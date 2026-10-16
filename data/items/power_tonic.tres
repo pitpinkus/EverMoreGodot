@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/stat_stage_effect.gd" id="1_stat_stage_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="3_item_data"]
+[ext_resource type="Resource" path="res://data/vfx/stat_up_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_attack_up"]
+script = ExtResource("1_stat_stage_effect")
+target_self = true
+stat = 1
+stages = 2
+duration = 3
+
+[resource]
+script = ExtResource("3_item_data")
+id = &"power_tonic"
+display_name = "Power Tonic"
+description = "Sharply raises the user's Attack for 3 turns."
+target_kind = 0
+max_range = 0.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_attack_up")])
+usable_in = 1
+consumed_on_use = true
+max_stack = 99
+vfx = ExtResource("4_vfx")

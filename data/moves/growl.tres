@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/stat_stage_effect.gd" id="1_stat_stage_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="3_move_data"]
+[ext_resource type="Resource" path="res://data/vfx/stat_down_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_attack_down"]
+script = ExtResource("1_stat_stage_effect")
+target_self = false
+stat = 1
+stages = -1
+duration = 3
+
+[resource]
+script = ExtResource("3_move_data")
+id = &"growl"
+display_name = "Growl"
+description = "A fierce growl that lowers a foe's Attack for 3 turns."
+target_kind = 1
+max_range = 6.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_attack_down")])
+element = 5
+accuracy = 100
+guaranteed_hit = false
+is_direct = true
+vfx = ExtResource("4_vfx")

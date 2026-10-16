@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/ui/menu_button.tscn" id="1_button"]
+
+[node name="BattleCommandButton" instance=ExtResource("1_button")]
+custom_minimum_size = Vector2(200, 48)
+theme_type_variation = &"BattleCommandButton"

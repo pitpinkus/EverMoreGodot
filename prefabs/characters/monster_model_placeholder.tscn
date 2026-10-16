@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://materials/monster_placeholder_material.tres" id="1_body"]
+[ext_resource type="Material" path="res://materials/monster_eye_material.tres" id="2_eye"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_body"]
+radius = 0.45
+height = 0.9
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+radius = 0.06
+height = 0.12
+radial_segments = 16
+rings = 8
+
+[node name="MonsterModelPlaceholder" type="Node3D"]
+editor_description = "Primitive-built monster placeholder, facing -Z. Species variants inherit it, recolour Body/Head and add accent meshes."
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+material_override = ExtResource("1_body")
+mesh = SubResource("SphereMesh_body")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -0.1)
+material_override = ExtResource("1_body")
+mesh = SubResource("SphereMesh_head")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 1.02, -0.35)
+cast_shadow = 0
+material_override = ExtResource("2_eye")
+mesh = SubResource("SphereMesh_eye")
+
+[node name="EyeRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 1.02, -0.35)
+cast_shadow = 0
+material_override = ExtResource("2_eye")
+mesh = SubResource("SphereMesh_eye")

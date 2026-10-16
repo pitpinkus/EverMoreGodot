@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/vfx/projectile.tscn" id="1_base"]
+[ext_resource type="Material" path="res://materials/vfx_orb_core.tres" id="2_core"]
+[ext_resource type="Material" path="res://materials/vfx_projectile_core.tres" id="3_band"]
+[ext_resource type="Material" path="res://materials/vfx_spark_particle.tres" id="4_spark"]
+[ext_resource type="Texture2D" path="res://materials/vfx_fade_out_curve.tres" id="5_fade"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_band"]
+inner_radius = 0.14
+outer_radius = 0.18
+rings = 24
+ring_segments = 6
+
+[sub_resource type="Gradient" id="Gradient_sparkle"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.6, 0.65, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_sparkle"]
+gradient = SubResource("Gradient_sparkle")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparkle"]
+emission_shape = 1
+emission_sphere_radius = 0.12
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.2
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
+damping_min = 0.0
+damping_max = 0.0
+scale_min = 0.6
+scale_max = 1.0
+scale_curve = ExtResource("5_fade")
+color_ramp = SubResource("GradientTexture1D_sparkle")
+
+[sub_resource type="QuadMesh" id="QuadMesh_sparkle"]
+material = ExtResource("4_spark")
+size = Vector2(0.16, 0.16)
+
+[node name="OrbProjectile" instance=ExtResource("1_base")]
+arc_height = 1.5
+
+[node name="Core" parent="." index="0"]
+material_override = ExtResource("2_core")
+
+[node name="Trail" parent="." index="1"]
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_sparkle")
+draw_pass_1 = SubResource("QuadMesh_sparkle")
+
+[node name="Band" type="MeshInstance3D" parent="Core" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+cast_shadow = 0
+material_override = ExtResource("3_band")
+mesh = SubResource("TorusMesh_band")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RebindableActionList" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="RebindableActionList" load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/rebindable_action_list.gd" id="1_list"]
 [ext_resource type="Script" path="res://scripts/resources/rebindable_action.gd" id="2_action"]
@@ -63,7 +63,12 @@ script = ExtResource("2_action")
 action = &"camera_zoom_out"
 display_name = "Zoom out"
 
+[sub_resource type="Resource" id="Resource_inventory"]
+script = ExtResource("2_action")
+action = &"inventory"
+display_name = "Inventory"
+
 [resource]
 script = ExtResource("1_list")
-actions = Array[ExtResource("2_action")]([SubResource("Resource_move_forward"), SubResource("Resource_move_back"), SubResource("Resource_move_left"), SubResource("Resource_move_right"), SubResource("Resource_run"), SubResource("Resource_jump"), SubResource("Resource_camera_left"), SubResource("Resource_camera_right"), SubResource("Resource_camera_up"), SubResource("Resource_camera_down"), SubResource("Resource_camera_zoom_in"), SubResource("Resource_camera_zoom_out")])
+actions = Array[ExtResource("2_action")]([SubResource("Resource_move_forward"), SubResource("Resource_move_back"), SubResource("Resource_move_left"), SubResource("Resource_move_right"), SubResource("Resource_run"), SubResource("Resource_jump"), SubResource("Resource_camera_left"), SubResource("Resource_camera_right"), SubResource("Resource_camera_up"), SubResource("Resource_camera_down"), SubResource("Resource_camera_zoom_in"), SubResource("Resource_camera_zoom_out"), SubResource("Resource_inventory")])
 reserved_actions = Array[StringName]([&"pause"])

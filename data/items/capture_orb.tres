@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/capture_effect.gd" id="1_capture_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="3_item_data"]
+[ext_resource type="Resource" path="res://data/vfx/capture_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_capture"]
+script = ExtResource("1_capture_effect")
+catch_bonus = 1.0
+
+[resource]
+script = ExtResource("3_item_data")
+id = &"capture_orb"
+display_name = "Capture Orb"
+description = "Thrown at a weakened wild monster to catch it."
+target_kind = 1
+max_range = 8.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_capture")])
+usable_in = 1
+consumed_on_use = true
+max_stack = 99
+vfx = ExtResource("4_vfx")

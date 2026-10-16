@@ -14,7 +14,7 @@ You are the gameplay programmer on Evermore, a Godot 4.7 game written in GDScrip
 
 ## How you write code
 - Typed GDScript 4 only (R5). Use `class_name` for anything reused.
-- Every `.gd` goes under `res://scripts/<domain>/` (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`) with the same base name as its scene (R11). Never put a script next to a `.tscn`.
+- Every `.gd` goes under `res://scripts/<domain>/` (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`, `battle`, `vfx`) with the same base name as its scene (R11). Never put a script next to a `.tscn`.
 - Behaviour that more than one thing needs becomes a component: `res://scripts/components/<name>.gd` (R3); if it needs a scene, ask `scene-designer` for `res://prefabs/components/<name>.tscn`.
 - Tunables are `@export`; content goes in `Resource` subclasses (`res://scripts/resources/`) + `.tres` in `res://data/` (R6, R11).
 - Communicate upward with signals; cross-system events go through the `EventBus` autoload (R4).

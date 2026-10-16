@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/stat_stage_effect.gd" id="1_stat_stage_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="3_move_data"]
+[ext_resource type="Resource" path="res://data/vfx/stat_up_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_defense_up"]
+script = ExtResource("1_stat_stage_effect")
+target_self = true
+stat = 2
+stages = 1
+duration = 3
+
+[resource]
+script = ExtResource("3_move_data")
+id = &"armor_up"
+display_name = "Armor Up"
+description = "Hardens its body to raise Defense for 3 turns."
+target_kind = 0
+max_range = 0.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_defense_up")])
+element = 5
+accuracy = 100
+guaranteed_hit = true
+is_direct = true
+vfx = ExtResource("4_vfx")

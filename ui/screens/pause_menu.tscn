@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://ui/screens/settings_menu.tscn" id="4_settings"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/confirm_popup.tscn" id="5_popup"]
 [ext_resource type="PackedScene" path="res://prefabs/components/submenu_switcher.tscn" id="6_switcher"]
+[ext_resource type="PackedScene" path="res://prefabs/components/pause_while_visible_component.tscn" id="7_pause"]
 
 [node name="PauseMenu" node_paths=PackedStringArray("initial_focus") instance=ExtResource("1_base")]
 process_mode = 3
@@ -88,3 +89,6 @@ layout_mode = 1
 [node name="SubmenuSwitcher" parent="." node_paths=PackedStringArray("main_column") instance=ExtResource("6_switcher")]
 unique_name_in_owner = true
 main_column = NodePath("../Dimmer/Margin/MenuColumn")
+
+[node name="PauseWhileVisibleComponent" parent="." node_paths=PackedStringArray("screen") instance=ExtResource("7_pause")]
+screen = NodePath("..")

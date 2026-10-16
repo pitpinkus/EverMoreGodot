@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/monster_status_panel.gd" id="1_panel"]
+
+[node name="MonsterStatusPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(260, 0)
+mouse_filter = 2
+theme_type_variation = &"BattlePanel"
+script = ExtResource("1_panel")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="NameLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text_overrun_behavior = 3
+
+[node name="HpBar" type="ProgressBar" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HpBar"
+max_value = 1.0
+step = 0.001
+value = 1.0
+show_percentage = false
+
+[node name="Details" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HpLabel" type="Label" parent="Content/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StatusLabel" type="Label" parent="Content/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HintLabel"
+horizontal_alignment = 2
+text_overrun_behavior = 3

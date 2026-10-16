@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="FloatingTextStyle" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/floating_text_style.gd" id="1_floating_text_style"]
+
+[resource]
+script = ExtResource("1_floating_text_style")
+damage_color = Color(1, 0.52, 0.47, 1)
+crit_color = Color(1, 0.72, 0.18, 1)
+heal_color = Color(0.42, 0.95, 0.5, 1)
+miss_color = Color(0.72, 0.74, 0.76, 1)
+buff_color = Color(0.42, 0.72, 1, 1)
+debuff_color = Color(0.78, 0.5, 1, 1)
+status_color = Color(1, 0.62, 0.3, 1)
+damage_format = "-%d"
+heal_format = "+%d"
+crit_text = "Critical!"
+crit_format = "%s %s"
+miss_text = "Miss"
+cured_format = "%s cured"
+stage_up_symbol = "+"
+stage_down_symbol = "-"
+stage_format = "%s %s"
+max_stage_symbols = 3
+crit_scale = 1.45
+rise_height = 0.8
+duration = 0.9
+stagger = 0.25
+outline_size = 12

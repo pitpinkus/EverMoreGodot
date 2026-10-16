@@ -1,0 +1,133 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/battle_hud.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/monster_status_panel.tscn" id="2_status_panel"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/battle_command_button.tscn" id="3_button"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/choice_list_panel.tscn" id="4_choice_list"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/battle_log.tscn" id="5_log"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/turn_timeline_bar.tscn" id="6_timeline"]
+
+[node name="BattleHud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_hud")
+status_panel_scene = ExtResource("2_status_panel")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"ScreenMargin"
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TurnInfo" type="VBoxContainer" parent="Margin/Layout/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="TurnLabel" type="Label" parent="Margin/Layout/TopRow/TurnInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text_overrun_behavior = 3
+
+[node name="HintLabel" type="Label" parent="Margin/Layout/TopRow/TurnInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+autowrap_mode = 3
+
+[node name="TurnTimeline" parent="Margin/Layout/TopRow" instance=ExtResource("6_timeline")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="EnemySide" type="HBoxContainer" parent="Margin/Layout/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 2
+
+[node name="EnemyPanels" type="VBoxContainer" parent="Margin/Layout/TopRow/EnemySide"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="Spacer" type="Control" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BottomRow" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PlayerPanels" type="VBoxContainer" parent="Margin/Layout/BottomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="BattleLog" parent="Margin/Layout/BottomRow" instance=ExtResource("5_log")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+
+[node name="CommandMenu" type="VBoxContainer" parent="Margin/Layout/BottomRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="MoveButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Move"
+
+[node name="AttackButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack"
+
+[node name="ItemButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Item"
+
+[node name="RunButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Run"
+
+[node name="EndTurnButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "End Turn"
+
+[node name="ChoiceList" parent="Margin/Layout/BottomRow" instance=ExtResource("4_choice_list")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 8

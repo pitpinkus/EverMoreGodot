@@ -1,7 +1,8 @@
 class_name Level
 extends Node3D
 ## Base for every map. Holds the standard layer nodes and, until a level loader
-## exists, spawns the player at a named Marker3D under %SpawnPoints.
+## exists, spawns the player at a named Marker3D under %SpawnPoints, or where
+## BattleFlow says the player returns to after a battle.
 
 ## Name shown to the player, e.g. in save slots.
 @export var display_name: String = ""
@@ -21,6 +22,11 @@ func _ready() -> void:
 		return
 	_characters.add_child(player)
 	player.global_transform = get_spawn(player_spawn)
+	# Coming back from a battle (or respawning at a heal point after losing one).
+	var point: RespawnPoint = BattleFlow.take_pending_return(scene_file_path)
+	var character: Character = player as Character
+	if point != null and not point.use_level_spawn and character != null:
+		character.place(point.transform, point.facing_yaw)
 
 
 ## Global transform of the spawn point with that name, or this level's origin if missing.

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/heal_effect.gd" id="1_heal_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="3_item_data"]
+[ext_resource type="Resource" path="res://data/vfx/heal_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_heal"]
+script = ExtResource("1_heal_effect")
+mode = 0
+amount = 20.0
+
+[resource]
+script = ExtResource("3_item_data")
+id = &"potion"
+display_name = "Potion"
+description = "Restores 20 HP to one monster."
+target_kind = 2
+max_range = 5.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_heal")])
+usable_in = 3
+consumed_on_use = true
+max_stack = 99
+vfx = ExtResource("4_vfx")

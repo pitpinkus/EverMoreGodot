@@ -10,7 +10,7 @@ All characters share **one base prefab** and are differentiated by **components*
 ## 1. Check what exists
 - `res://prefabs/characters/character_base.tscn` — create it first if missing (step 2).
 - `Glob res://prefabs/characters/*.tscn` — maybe this is a variant of an existing character (e.g. a guard is an `npc` with a different `CharacterData` and a patrol state).
-- `Glob res://scripts/components/*.gd`, `res://scripts/characters/*.gd`, `res://scripts/resources/*.gd` and `res://data/characters/**`.
+- `Glob res://scripts/components/*.gd`, `res://scripts/characters/*.gd`, `res://scripts/resources/*.gd`, `res://data/characters/**` and (for monsters) `res://data/monsters/*.tres`.
 
 ## 2. Character base (create once)
 `res://prefabs/characters/character_base.tscn` + `res://scripts/characters/character_base.gd` (`class_name Character`) (R11):
@@ -38,10 +38,24 @@ All variants are flat files in `res://prefabs/characters/`; a variant only gets 
 |---|---|---|
 | Player | `prefabs/characters/player.tscn` | `PlayerInputComponent` (`scripts/components/player_input_component.gd`; reads InputMap actions, R7) that drives the base movement API; camera; added to group `"player"` |
 | NPC | `prefabs/characters/npc.tscn` | `InteractableComponent` + `@export var dialog: Dialog` (opens the `dialog_box` UI via `EventBus`); idle/wander/patrol states |
-| Trainer | `prefabs/characters/trainer.tscn` | inherits `npc`; line-of-sight `Area3D`, `@export var party: Array[CreatureInstance]`, starts a battle via `EventBus` |
-| Wild creature (overworld) | `prefabs/characters/creature.tscn` | wander/flee/approach states; `@export var species: CreatureSpecies`; touching it starts a battle |
+| Battle monster | `prefabs/characters/battle_monster.tscn` | `scripts/characters/battle_monster.gd`; `StepBudgetComponent`, `StatStagesComponent`, `StatusHolderComponent`, selection ring. `setup(MonsterInstance, side)` instances `species.model_scene` under `Visual`. One prefab for every species (see 3b) |
 
-**Creatures in battle are data, not character scenes.** A creature's species (base stats, types, learnable moves, model) is a `CreatureSpecies` resource; an owned/encountered creature is a `CreatureInstance` resource (level, current HP, moves, status). Moves and status effects (burn, ...) are their own Resources (classes in `res://scripts/resources/`, content in `res://data/`). The battle scene shows them with a shared `battle_creature` prefab. When migrating, map the Unity ScriptableObjects/classes to these resources.
+### 3a. Overworld encounters: trainers and visible wild monsters (NOT character_base)
+They are `prefabs/characters/encounter_npc.tscn`: a static `Node3D` with `scripts/characters/encounter_npc.gd` (`class_name EncounterNpc`; exports `encounter: Encounter`, `encounter_id`, `despawn_when_cleared`), a `Visual` node and an `%EncounterTrigger` (`prefabs/components/encounter_trigger.tscn`) that starts the battle. Variants are inherited scenes of it, not of `npc` / `character_base`:
+- `wild_monster.tscn` — a monster model prefab under `Visual`, small trigger, despawns when cleared.
+- `trainer.tscn` — a character model under `Visual`, long line-of-sight trigger, `StaticBody3D` body, `despawn_when_cleared = false`.
+
+Who you fight is the `Encounter` resource (`data/encounters/`), not the scene. A new trainer or wild monster is an instance of a variant with a different `encounter` / model; never a new script.
+
+### 3b. Monsters in battle are data
+- **Species:** `SpeciesData` (`scripts/resources/species_data.gd`, extends `GameDataEntry` with `id` / `display_name`), one `.tres` per species in `res://data/monsters/`: element, base stats, `learnset`, `catch_rate`, and `model_scene`.
+- **Model:** `model_scene` points to a model prefab `prefabs/characters/monster_model_<name>.tscn`, inherited from `monster_model_placeholder.tscn` (swap materials / add meshes) or a real imported model wrapper (section 2).
+- **Per-monster state:** `MonsterInstance` (`scripts/resources/monster_instance.gd`): species, level, IVs, current HP, known moves; saved via `to_dict()` / `from_dict()`. Statuses and stat stages are battle-only, on `BattleMonster`'s components.
+- **Moves and items:** `MoveData` / `ItemData` `.tres` in `res://data/moves/` and `res://data/items/` (both extend `ActionData`), whose `effects` are composable `BattleEffect` sub-resources (damage, heal, stat stage, apply/cure status, capture, ...). Status effects (burn, ...) are `StatusEffectData` in `res://data/status_effects/`. New behaviour = combine existing effects, or add one `BattleEffect` subclass.
+- **Battle logic** lives in `res://scripts/battle/` (controller, turn order, action resolver, AI, formulas); character code doesn't duplicate it (R1).
+- **Every species, move, item and status must be listed in `res://data/game_database.tres`** so `DataRegistry` can resolve ids (saves, lookups).
+
+**A new monster = a model prefab (inherited placeholder or real model) + a species `.tres` + an entry in `data/game_database.tres`. No new scripts, no new battle scene.** When migrating, map the Unity ScriptableObjects/classes to these resources.
 
 A specific character (e.g. "Blacksmith", "Slime") is usually **just a `.tres` CharacterData + an instance of the variant**. Make a new inherited scene only if it needs different nodes (new visual, extra component). Character-specific logic is a new `State` or component, never a fork of an existing script.
 
@@ -53,7 +67,8 @@ A specific character (e.g. "Blacksmith", "Slime") is usually **just a `.tres` Ch
 
 ## 5. Done checklist
 - [ ] Scene is a flat file in `res://prefabs/characters/`; scripts in `res://scripts/characters/` (or `scripts/components/`, `scripts/resources/`) with matching base names (R11).
-- [ ] Inherits `character_base` (directly or via player/npc/enemy) (R2).
+- [ ] Moving characters inherit `character_base` (directly or via player/npc/battle_monster); overworld trainers / wild monsters inherit `encounter_npc` instead (R2).
+- [ ] New monster: model prefab inherited from `monster_model_placeholder` (or a real model wrapper), species `.tres` in `data/monsters/` with `model_scene` set, listed in `data/game_database.tres`; no new scripts (R1, R2, R6).
 - [ ] Stats from `CharacterData` resource; no hard-coded numbers (R6).
 - [ ] Reuses shared components and `StateMachine`; no duplicated movement/health/AI code (R1, R3).
 - [ ] Model is an instanced model prefab under `Visual`; animation only via `AnimationComponent` wired to `state_changed`, no `play()` in states (R1, R2, R3, R4).

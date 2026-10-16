@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ActionVfx" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/action_vfx.gd" id="1_action_vfx"]
+[ext_resource type="PackedScene" path="res://prefabs/vfx/cast_flash_vfx.tscn" id="2_cast_flash_vfx"]
+[ext_resource type="PackedScene" path="res://prefabs/vfx/fireball_projectile.tscn" id="3_fireball_projectile"]
+[ext_resource type="PackedScene" path="res://prefabs/vfx/fire_impact_vfx.tscn" id="4_fire_impact_vfx"]
+
+[resource]
+script = ExtResource("1_action_vfx")
+cast_vfx = ExtResource("2_cast_flash_vfx")
+cast_delay = 0.2
+projectile = ExtResource("3_fireball_projectile")
+impact_vfx = ExtResource("4_fire_impact_vfx")

@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="StartingProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/starting_profile.gd" id="1_starting_profile"]
+[ext_resource type="Resource" path="res://data/monsters/emberling.tres" id="2_emberling"]
+[ext_resource type="Script" path="res://scripts/resources/monster_spawn_entry.gd" id="3_monster_spawn_entry"]
+[ext_resource type="Resource" path="res://data/monsters/mosshell.tres" id="4_mosshell"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="5_item_data"]
+[ext_resource type="Resource" path="res://data/items/potion.tres" id="6_potion"]
+[ext_resource type="Resource" path="res://data/items/field_ration.tres" id="7_field_ration"]
+[ext_resource type="Resource" path="res://data/items/power_tonic.tres" id="8_power_tonic"]
+[ext_resource type="Resource" path="res://data/items/burn_salve.tres" id="9_burn_salve"]
+[ext_resource type="Resource" path="res://data/items/capture_orb.tres" id="10_capture_orb"]
+[ext_resource type="Resource" path="res://data/items/old_key.tres" id="11_old_key"]
+
+[sub_resource type="Resource" id="Resource_emberling"]
+script = ExtResource("3_monster_spawn_entry")
+species = ExtResource("2_emberling")
+min_level = 6
+max_level = 6
+fixed_iv = 12
+
+[sub_resource type="Resource" id="Resource_mosshell"]
+script = ExtResource("3_monster_spawn_entry")
+species = ExtResource("4_mosshell")
+min_level = 6
+max_level = 6
+fixed_iv = 12
+
+[resource]
+script = ExtResource("1_starting_profile")
+party = Array[ExtResource("3_monster_spawn_entry")]([SubResource("Resource_emberling"), SubResource("Resource_mosshell")])
+items = Dictionary[ExtResource("5_item_data"), int]({
+ExtResource("6_potion"): 3,
+ExtResource("7_field_ration"): 1,
+ExtResource("8_power_tonic"): 1,
+ExtResource("9_burn_salve"): 1,
+ExtResource("10_capture_orb"): 5,
+ExtResource("11_old_key"): 1
+})

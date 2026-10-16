@@ -28,5 +28,4 @@ func _ready() -> void:
 ## Quit can't work on the web; hide it and close the focus wrap around it.
 func _hide_quit_button() -> void:
 	_quit_button.hide()
-	_start_button.focus_neighbor_top = _start_button.get_path_to(_settings_button)
-	_settings_button.focus_neighbor_bottom = _settings_button.get_path_to(_start_button)
+	FocusUtils.wrap_vertical([_start_button, _load_button, _settings_button])

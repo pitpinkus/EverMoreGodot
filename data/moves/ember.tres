@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/damage_effect.gd" id="1_damage_effect"]
+[ext_resource type="Resource" path="res://data/status_effects/burn.tres" id="2_burn"]
+[ext_resource type="Script" path="res://scripts/resources/apply_status_effect.gd" id="3_apply_status_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="4_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="5_move_data"]
+[ext_resource type="Resource" path="res://data/vfx/fire_bolt_vfx.tres" id="6_vfx"]
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("1_damage_effect")
+power = 30
+
+[sub_resource type="Resource" id="Resource_burn"]
+script = ExtResource("3_apply_status_effect")
+chance = 30
+status = ExtResource("2_burn")
+duration = 3
+
+[resource]
+script = ExtResource("5_move_data")
+id = &"ember"
+display_name = "Ember"
+description = "Flings embers at a distant foe. May burn."
+target_kind = 1
+max_range = 8.0
+effects = Array[ExtResource("4_battle_effect")]([SubResource("Resource_damage"), SubResource("Resource_burn")])
+element = 0
+accuracy = 90
+guaranteed_hit = false
+is_direct = false
+indirect_damage_multiplier = 0.85
+vfx = ExtResource("6_vfx")

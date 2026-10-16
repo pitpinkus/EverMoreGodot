@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="SpeciesData" format=3]
+
+[ext_resource type="Resource" path="res://data/moves/tackle.tres" id="1_tackle"]
+[ext_resource type="Script" path="res://scripts/resources/learnset_entry.gd" id="2_learnset_entry"]
+[ext_resource type="Resource" path="res://data/moves/growl.tres" id="3_growl"]
+[ext_resource type="Resource" path="res://data/moves/ember.tres" id="4_ember"]
+[ext_resource type="Resource" path="res://data/moves/fire_breath.tres" id="5_fire_breath"]
+[ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="6_species_data"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_ember.tscn" id="7_model"]
+
+[sub_resource type="Resource" id="Resource_learn_tackle"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("1_tackle")
+level = 1
+
+[sub_resource type="Resource" id="Resource_learn_growl"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("3_growl")
+level = 2
+
+[sub_resource type="Resource" id="Resource_learn_ember"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("4_ember")
+level = 3
+
+[sub_resource type="Resource" id="Resource_learn_fire_breath"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("5_fire_breath")
+level = 6
+
+[resource]
+script = ExtResource("6_species_data")
+id = &"emberling"
+display_name = "Emberling"
+element = 0
+base_hp = 45
+base_attack = 60
+base_defense = 42
+base_speed = 55
+base_crit_rate = 10
+base_crit_mod = 50
+base_dodge = 10
+base_steps = 5.0
+catch_rate = 0.45
+learnset = Array[ExtResource("2_learnset_entry")]([SubResource("Resource_learn_tackle"), SubResource("Resource_learn_growl"), SubResource("Resource_learn_ember"), SubResource("Resource_learn_fire_breath")])
+model_scene = ExtResource("7_model")

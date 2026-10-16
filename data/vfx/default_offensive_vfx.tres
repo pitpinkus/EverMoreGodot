@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ActionVfx" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/action_vfx.gd" id="1_action_vfx"]
+[ext_resource type="PackedScene" path="res://prefabs/vfx/hit_impact_vfx.tscn" id="2_hit_impact_vfx"]
+
+[resource]
+script = ExtResource("1_action_vfx")
+cast_delay = 0.0
+impact_vfx = ExtResource("2_hit_impact_vfx")

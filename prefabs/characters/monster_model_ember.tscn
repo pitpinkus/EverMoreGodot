@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_placeholder.tscn" id="1_base"]
+[ext_resource type="Material" path="res://materials/monster_ember_material.tres" id="2_body"]
+[ext_resource type="Material" path="res://materials/monster_flame_material.tres" id="3_flame"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flame"]
+top_radius = 0.0
+bottom_radius = 0.16
+height = 0.42
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tail"]
+top_radius = 0.03
+bottom_radius = 0.13
+height = 0.6
+radial_segments = 16
+
+[node name="MonsterModelEmber" instance=ExtResource("1_base")]
+
+[node name="Body" parent="." index="0"]
+material_override = ExtResource("2_body")
+
+[node name="Head" parent="." index="1"]
+material_override = ExtResource("2_body")
+
+[node name="Flame" type="MeshInstance3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, -0.05)
+material_override = ExtResource("3_flame")
+mesh = SubResource("CylinderMesh_flame")
+
+[node name="Tail" type="MeshInstance3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 0.4, 0.55)
+material_override = ExtResource("2_body")
+mesh = SubResource("CylinderMesh_tail")
+
+[node name="TailFlame" type="MeshInstance3D" parent="." index="6"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0.62, 0.78)
+material_override = ExtResource("3_flame")
+mesh = SubResource("CylinderMesh_flame")

@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="SpeciesData" format=3]
+
+[ext_resource type="Resource" path="res://data/moves/tackle.tres" id="1_tackle"]
+[ext_resource type="Script" path="res://scripts/resources/learnset_entry.gd" id="2_learnset_entry"]
+[ext_resource type="Resource" path="res://data/moves/growl.tres" id="3_growl"]
+[ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="4_species_data"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_gale.tscn" id="5_model"]
+[ext_resource type="Resource" path="res://data/moves/agility.tres" id="6_agility"]
+
+[sub_resource type="Resource" id="Resource_learn_tackle"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("1_tackle")
+level = 1
+
+[sub_resource type="Resource" id="Resource_learn_agility"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("6_agility")
+level = 2
+
+[sub_resource type="Resource" id="Resource_learn_growl"]
+script = ExtResource("2_learnset_entry")
+move = ExtResource("3_growl")
+level = 3
+
+[resource]
+script = ExtResource("4_species_data")
+id = &"galewing"
+display_name = "Galewing"
+element = 2
+base_hp = 42
+base_attack = 55
+base_defense = 40
+base_speed = 65
+base_crit_rate = 8
+base_crit_mod = 60
+base_dodge = 15
+base_steps = 8.0
+catch_rate = 0.5
+learnset = Array[ExtResource("2_learnset_entry")]([SubResource("Resource_learn_tackle"), SubResource("Resource_learn_agility"), SubResource("Resource_learn_growl")])
+model_scene = ExtResource("5_model")

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="1_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="2_item_data"]
+
+[resource]
+script = ExtResource("2_item_data")
+id = &"old_key"
+display_name = "Old Key"
+description = "A rusty key. It must open something somewhere."
+target_kind = 0
+max_range = 0.0
+effects = Array[ExtResource("1_battle_effect")]([])
+usable_in = 0
+consumed_on_use = false
+max_stack = 1

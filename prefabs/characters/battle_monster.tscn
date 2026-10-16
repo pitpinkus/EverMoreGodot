@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/characters/character_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/characters/battle_monster.gd" id="2_script"]
+[ext_resource type="Resource" path="res://data/movement/monster_movement_stats.tres" id="3_stats"]
+[ext_resource type="PackedScene" path="res://prefabs/components/step_budget_component.tscn" id="4_step_budget"]
+[ext_resource type="PackedScene" path="res://prefabs/components/stat_stages_component.tscn" id="5_stat_stages"]
+[ext_resource type="PackedScene" path="res://prefabs/components/status_holder_component.tscn" id="6_status_holder"]
+[ext_resource type="Material" path="res://materials/battle_marker_material.tres" id="7_marker"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_monster"]
+radius = 0.45
+height = 1.2
+
+[sub_resource type="TorusMesh" id="TorusMesh_selection"]
+inner_radius = 0.6
+outer_radius = 0.72
+rings = 48
+ring_segments = 8
+
+[node name="BattleMonster" instance=ExtResource("1_base")]
+collision_mask = 3
+script = ExtResource("2_script")
+
+[node name="CollisionShape3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CapsuleShape3D_monster")
+
+[node name="MovementComponent" parent="." index="2"]
+stats = ExtResource("3_stats")
+
+[node name="StepBudgetComponent" parent="." index="3" node_paths=PackedStringArray("body") instance=ExtResource("4_step_budget")]
+unique_name_in_owner = true
+body = NodePath("..")
+
+[node name="StatStagesComponent" parent="." index="4" instance=ExtResource("5_stat_stages")]
+unique_name_in_owner = true
+
+[node name="StatusHolderComponent" parent="." index="5" instance=ExtResource("6_status_holder")]
+unique_name_in_owner = true
+
+[node name="SelectionRing" type="MeshInstance3D" parent="." index="6"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+visible = false
+cast_shadow = 0
+material_override = ExtResource("7_marker")
+mesh = SubResource("TorusMesh_selection")
+
+[node name="FxAnchor" type="Marker3D" parent="." index="7"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+
+[connection signal="move_requested" from="StepBudgetComponent" to="." method="move"]

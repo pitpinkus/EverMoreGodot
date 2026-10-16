@@ -126,6 +126,11 @@ func get_active_level_path() -> String:
 	return _active.level_path if _active != null else ""
 
 
+## True while a save slot is being played (false on the title screen or when a scene is run directly).
+func has_active_slot() -> bool:
+	return _active != null
+
+
 ## True while a slot is active and the current scene is a Level.
 func can_save() -> bool:
 	return _active != null and get_tree().current_scene is Level

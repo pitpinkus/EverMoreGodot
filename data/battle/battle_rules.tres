@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="BattleRules" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/battle_rules.gd" id="1_battle_rules"]
+
+[resource]
+script = ExtResource("1_battle_rules")
+stage_multipliers = Array[float]([0.2, 0.35, 0.5, 0.65, 0.75, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5])
+max_stage = 6
+dodge_effectiveness = 0.5
+min_hit_chance = 5.0
+max_hit_chance = 100.0
+damage_variance_min = 0.85
+iv_max = 24
+max_known_moves = 4
+max_party_size = 6
+max_units_per_side = 2
+flee_chance = 1.0
+capture_hp_weight = 0.7
+min_move_distance = 0.25
+action_delay = 0.6
+turn_base_delay = 1000.0
+turn_jitter_min = 0.85
+turn_jitter_max = 1.15
+min_turn_speed = 1

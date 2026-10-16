@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/heal_effect.gd" id="1_heal_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="3_move_data"]
+[ext_resource type="Resource" path="res://data/vfx/heal_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_heal"]
+script = ExtResource("1_heal_effect")
+mode = 2
+amount = 100.0
+
+[resource]
+script = ExtResource("3_move_data")
+id = &"heal_pulse"
+display_name = "Heal Pulse"
+description = "Sends a soothing pulse that restores an ally's HP."
+target_kind = 2
+max_range = 5.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_heal")])
+element = 3
+accuracy = 100
+guaranteed_hit = true
+is_direct = true
+vfx = ExtResource("4_vfx")

@@ -1,0 +1,106 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/battle_scene.gd" id="1_scene"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/battle_monster.tscn" id="2_monster"]
+[ext_resource type="PackedScene" path="res://levels/test_battle_map.tscn" id="3_map"]
+[ext_resource type="Resource" path="res://data/encounters/test_wild_emberling.tres" id="4_encounter"]
+[ext_resource type="PackedScene" path="res://ui/screens/pause_menu.tscn" id="5_pause_menu"]
+[ext_resource type="PackedScene" path="res://prefabs/components/third_person_camera.tscn" id="6_camera"]
+[ext_resource type="PackedScene" path="res://prefabs/components/camera_input_component.tscn" id="7_camera_input"]
+[ext_resource type="PackedScene" path="res://prefabs/props/battle_cursor.tscn" id="8_cursor"]
+[ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="9_manager"]
+[ext_resource type="Script" path="res://scripts/battle/player_battle_controller.gd" id="10_player_controller"]
+[ext_resource type="Script" path="res://scripts/battle/battle_ai.gd" id="11_ai"]
+[ext_resource type="Resource" path="res://data/battle/default_ai_profile.tres" id="12_ai_profile"]
+[ext_resource type="PackedScene" path="res://ui/screens/battle_hud.tscn" id="13_hud"]
+[ext_resource type="Script" path="res://scripts/battle/action_vfx_player.gd" id="14_vfx_player"]
+[ext_resource type="Script" path="res://scripts/battle/floating_text_spawner.gd" id="15_text_spawner"]
+[ext_resource type="PackedScene" path="res://prefabs/vfx/floating_text.tscn" id="16_floating_text"]
+[ext_resource type="Resource" path="res://data/vfx/default_offensive_vfx.tres" id="17_default_offensive_vfx"]
+[ext_resource type="Resource" path="res://data/vfx/default_support_vfx.tres" id="18_default_support_vfx"]
+[ext_resource type="Resource" path="res://data/vfx/floating_text_style.tres" id="19_floating_text_style"]
+
+[node name="BattleScene" type="Node3D"]
+script = ExtResource("1_scene")
+battle_monster_scene = ExtResource("2_monster")
+default_battle_map = ExtResource("3_map")
+fallback_encounter = ExtResource("4_encounter")
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="PauseMenu" parent="PauseLayer" instance=ExtResource("5_pause_menu")]
+
+[node name="MapSlot" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Units" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="ActionVfxPlayer" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("14_vfx_player")
+default_offensive_vfx = ExtResource("17_default_offensive_vfx")
+default_support_vfx = ExtResource("18_default_support_vfx")
+
+[node name="FloatingTextSpawner" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("15_text_spawner")
+style = ExtResource("19_floating_text_style")
+text_scene = ExtResource("16_floating_text")
+
+[node name="CameraAnchor" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CameraRig" parent="CameraAnchor" instance=ExtResource("6_camera")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+pitch_min_deg = -70.0
+pitch_max_deg = -10.0
+initial_pitch_deg = -40.0
+distance = 12.0
+min_distance = 6.0
+max_distance = 20.0
+
+[node name="CameraInputComponent" parent="CameraAnchor" instance=ExtResource("7_camera_input")]
+unique_name_in_owner = true
+capture_mouse_on_ready = false
+capture_on_click = false
+
+[node name="BattleCursor" parent="." node_paths=PackedStringArray("camera_pivot") instance=ExtResource("8_cursor")]
+unique_name_in_owner = true
+camera_pivot = NodePath("../CameraAnchor/CameraRig")
+
+[node name="BattleManager" type="Node" parent="." node_paths=PackedStringArray("player_controller", "ai_controller", "vfx_player")]
+unique_name_in_owner = true
+script = ExtResource("9_manager")
+player_controller = NodePath("PlayerBattleController")
+ai_controller = NodePath("BattleAI")
+vfx_player = NodePath("../ActionVfxPlayer")
+
+[node name="PlayerBattleController" type="Node" parent="BattleManager" node_paths=PackedStringArray("hud", "cursor")]
+unique_name_in_owner = true
+script = ExtResource("10_player_controller")
+hud = NodePath("../../HudLayer/BattleHud")
+cursor = NodePath("../../BattleCursor")
+
+[node name="BattleAI" type="Node" parent="BattleManager"]
+unique_name_in_owner = true
+script = ExtResource("11_ai")
+profile = ExtResource("12_ai_profile")
+
+[node name="HudLayer" type="CanvasLayer" parent="."]
+
+[node name="BattleHud" parent="HudLayer" instance=ExtResource("13_hud")]
+unique_name_in_owner = true
+
+[connection signal="look_requested" from="CameraAnchor/CameraInputComponent" to="CameraAnchor/CameraRig" method="rotate_view"]
+[connection signal="zoom_requested" from="CameraAnchor/CameraInputComponent" to="CameraAnchor/CameraRig" method="zoom"]
+[connection signal="moved" from="BattleCursor" to="." method="_on_cursor_moved"]
+[connection signal="unit_picking_changed" from="BattleCursor" to="." method="_on_unit_picking_changed"]
+[connection signal="battle_ended" from="BattleManager" to="." method="_on_battle_ended"]
+[connection signal="events_recorded" from="BattleManager" to="FloatingTextSpawner" method="show_events"]
+[connection signal="message_logged" from="BattleManager" to="HudLayer/BattleHud" method="log_message"]
+[connection signal="timeline_changed" from="BattleManager" to="." method="_on_timeline_changed"]
+[connection signal="turn_ended" from="BattleManager" to="." method="_on_turn_ended"]
+[connection signal="turn_started" from="BattleManager" to="." method="_on_turn_started"]

@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/battle_map_base.gd" id="1_map"]
+[ext_resource type="PackedScene" path="res://prefabs/props/environment_rig.tscn" id="2_environment_rig"]
+
+[node name="BattleMap" type="Node3D"]
+script = ExtResource("1_map")
+
+[node name="EnvironmentRig" parent="." instance=ExtResource("2_environment_rig")]
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="PlayerSpawns" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+unique_name_in_owner = true

@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/vfx/projectile.tscn" id="1_base"]
+[ext_resource type="Material" path="res://materials/vfx_fire_core.tres" id="2_core"]
+[ext_resource type="Material" path="res://materials/vfx_fire_glow.tres" id="3_glow"]
+[ext_resource type="Material" path="res://materials/vfx_soft_particle.tres" id="4_soft"]
+[ext_resource type="Texture2D" path="res://materials/vfx_fade_out_curve.tres" id="5_fade"]
+[ext_resource type="Texture2D" path="res://materials/vfx_fire_ramp.tres" id="6_fire_ramp"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_glow"]
+radius = 0.32
+height = 0.64
+radial_segments = 16
+rings = 8
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fire"]
+emission_shape = 1
+emission_sphere_radius = 0.12
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.2
+initial_velocity_max = 0.6
+gravity = Vector3(0, 1.5, 0)
+damping_min = 0.0
+damping_max = 0.0
+scale_min = 0.8
+scale_max = 1.4
+scale_curve = ExtResource("5_fade")
+color_ramp = ExtResource("6_fire_ramp")
+
+[sub_resource type="QuadMesh" id="QuadMesh_fire"]
+material = ExtResource("4_soft")
+size = Vector2(0.35, 0.35)
+
+[node name="FireballProjectile" instance=ExtResource("1_base")]
+
+[node name="Core" parent="." index="0"]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+material_override = ExtResource("2_core")
+
+[node name="Trail" parent="." index="1"]
+amount = 72
+lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_fire")
+draw_pass_1 = SubResource("QuadMesh_fire")
+
+[node name="Glow" type="MeshInstance3D" parent="Core" index="0"]
+cast_shadow = 0
+material_override = ExtResource("3_glow")
+mesh = SubResource("SphereMesh_glow")

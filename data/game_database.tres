@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="GameDatabase" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/game_database.gd" id="1_game_database"]
+[ext_resource type="Resource" path="res://data/battle/battle_rules.tres" id="2_battle_rules"]
+[ext_resource type="Resource" path="res://data/monsters/emberling.tres" id="3_emberling"]
+[ext_resource type="Resource" path="res://data/monsters/mosshell.tres" id="4_mosshell"]
+[ext_resource type="Resource" path="res://data/monsters/galewing.tres" id="5_galewing"]
+[ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="6_species_data"]
+[ext_resource type="Resource" path="res://data/moves/tackle.tres" id="7_tackle"]
+[ext_resource type="Resource" path="res://data/moves/ember.tres" id="8_ember"]
+[ext_resource type="Resource" path="res://data/moves/fire_breath.tres" id="9_fire_breath"]
+[ext_resource type="Resource" path="res://data/moves/armor_up.tres" id="10_armor_up"]
+[ext_resource type="Resource" path="res://data/moves/heal_pulse.tres" id="11_heal_pulse"]
+[ext_resource type="Resource" path="res://data/moves/growl.tres" id="12_growl"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="13_move_data"]
+[ext_resource type="Resource" path="res://data/items/potion.tres" id="14_potion"]
+[ext_resource type="Resource" path="res://data/items/field_ration.tres" id="15_field_ration"]
+[ext_resource type="Resource" path="res://data/items/power_tonic.tres" id="16_power_tonic"]
+[ext_resource type="Resource" path="res://data/items/burn_salve.tres" id="17_burn_salve"]
+[ext_resource type="Resource" path="res://data/items/capture_orb.tres" id="18_capture_orb"]
+[ext_resource type="Resource" path="res://data/items/old_key.tres" id="19_old_key"]
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="20_item_data"]
+[ext_resource type="Resource" path="res://data/status_effects/burn.tres" id="21_burn"]
+[ext_resource type="Script" path="res://scripts/resources/status_effect_data.gd" id="22_status_effect_data"]
+[ext_resource type="Resource" path="res://data/moves/agility.tres" id="23_agility"]
+[ext_resource type="Resource" path="res://data/moves/chill_gaze.tres" id="24_chill_gaze"]
+
+[resource]
+script = ExtResource("1_game_database")
+rules = ExtResource("2_battle_rules")
+species = Array[ExtResource("6_species_data")]([ExtResource("3_emberling"), ExtResource("4_mosshell"), ExtResource("5_galewing")])
+moves = Array[ExtResource("13_move_data")]([ExtResource("7_tackle"), ExtResource("8_ember"), ExtResource("9_fire_breath"), ExtResource("10_armor_up"), ExtResource("11_heal_pulse"), ExtResource("12_growl"), ExtResource("23_agility"), ExtResource("24_chill_gaze")])
+items = Array[ExtResource("20_item_data")]([ExtResource("14_potion"), ExtResource("15_field_ration"), ExtResource("16_power_tonic"), ExtResource("17_burn_salve"), ExtResource("18_capture_orb"), ExtResource("19_old_key")])
+statuses = Array[ExtResource("22_status_effect_data")]([ExtResource("21_burn")])

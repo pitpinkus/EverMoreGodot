@@ -38,4 +38,7 @@ surface_material_override/0 = ExtResource("5_outfit")
 [node name="Hair_Buns" parent="EarthTraveler/Armature/Skeleton3D"]
 surface_material_override/0 = ExtResource("7_hair")
 
+[node name="AnimationPlayer" parent="EarthTraveler"]
+autoplay = &"Idle"
+
 [editable path="EarthTraveler"]

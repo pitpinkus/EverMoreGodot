@@ -3,10 +3,8 @@ extends CharacterBody3D
 ## Base for every walking creature/person. Owns the physics body and delegates
 ## movement maths to %MovementComponent. Has no knowledge of input or AI:
 ## controllers call move() and jump().
-## With save_key set, position and facing are saved and loaded through SaveSystem.
-
-const SAVE_KEY_TRANSFORM: String = "transform"
-const SAVE_KEY_FACING_YAW: String = "facing_yaw"
+## With save_key set, position and facing are saved and loaded through SaveSystem
+## (stored as a RespawnPoint dictionary without a level path).
 
 ## Key of this character's entry in SaveSystem. Must be unique game-wide; empty = not saved.
 @export var save_key: StringName
@@ -30,31 +28,33 @@ func jump() -> void:
 	_movement.request_jump()
 
 
+## Puts the character at at, facing yaw (radians, 0 = -Z) right away, standing still.
+func place(at: Transform3D, yaw: float) -> void:
+	global_transform = at
+	velocity = Vector3.ZERO
+	_movement.set_facing_yaw(yaw)
+	_visual.rotation.y = yaw
+
+
+## Yaw (radians, 0 = -Z) the character faces or is turning to.
+func get_facing_yaw() -> float:
+	return _movement.get_facing_yaw()
+
+
+## Turns (smoothly) to look at point; height is ignored.
+func face_towards(point: Vector3) -> void:
+	_movement.set_facing_direction(point - global_position)
+
+
 func _on_save_started() -> void:
-	SaveSystem.set_state(save_key, {
-		SAVE_KEY_TRANSFORM: global_transform,
-		SAVE_KEY_FACING_YAW: _movement.get_facing_yaw(),
-	})
+	SaveSystem.set_state(save_key, RespawnPoint.create("", global_transform, get_facing_yaw()).to_dict())
 
 
 func _on_load_completed(_info: SaveSlotInfo) -> void:
 	var state: Variant = SaveSystem.get_state(save_key)
 	if state is Dictionary:
-		_apply_save_state(state)
-
-
-## Puts the character back where _on_save_started() recorded it, standing still.
-func _apply_save_state(state: Dictionary) -> void:
-	var saved_transform: Variant = state.get(SAVE_KEY_TRANSFORM)
-	if saved_transform is Transform3D:
-		global_transform = saved_transform
-	else:
-		push_warning("Character '%s': save state has no valid '%s'." % [name, SAVE_KEY_TRANSFORM])
-	velocity = Vector3.ZERO
-	var yaw: Variant = state.get(SAVE_KEY_FACING_YAW)
-	if yaw is float:
-		_movement.set_facing_yaw(yaw)
-		_visual.rotation.y = yaw
+		var point: RespawnPoint = RespawnPoint.from_dict(state)
+		place(point.transform, point.facing_yaw)
 
 
 func _physics_process(delta: float) -> void:

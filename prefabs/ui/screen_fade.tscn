@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/screen_fade.gd" id="1_fade"]
+
+[node name="ScreenFade" type="CanvasLayer"]
+process_mode = 3
+layer = 100
+script = ExtResource("1_fade")
+
+[node name="Overlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+editor_description = "R8 one-off: a plain black full-screen fade overlay; it is not a themed widget, so its colour is set on the node."
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

@@ -22,8 +22,7 @@ func _ready() -> void:
 func set_move_input(direction: Vector3, running: bool) -> void:
 	_move_direction = Vector3(direction.x, 0.0, direction.z).limit_length(1.0)
 	_running = running
-	if not _move_direction.is_zero_approx():
-		_facing_direction = _move_direction.normalized()
+	set_facing_direction(_move_direction)
 
 
 func request_jump() -> void:
@@ -77,6 +76,13 @@ func get_facing_yaw() -> float:
 ## Sets the wanted facing directly, e.g. when restoring a save.
 func set_facing_yaw(yaw: float) -> void:
 	_facing_direction = _yaw_to_direction(yaw)
+
+
+## Sets the wanted facing to direction (flattened); ignored if it has no horizontal part.
+func set_facing_direction(direction: Vector3) -> void:
+	var flat: Vector3 = Vector3(direction.x, 0.0, direction.z)
+	if not flat.is_zero_approx():
+		_facing_direction = flat.normalized()
 
 
 ## Yaw 0 faces Vector3.FORWARD (-Z).
