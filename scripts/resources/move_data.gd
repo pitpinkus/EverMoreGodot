@@ -17,3 +17,12 @@ func rolls_accuracy() -> bool:
 
 func get_accuracy() -> int:
 	return accuracy
+
+
+## Total power of the damage it deals to its target (0 = not a damaging move).
+func get_power() -> int:
+	var power: int = 0
+	for effect: BattleEffect in effects:
+		if effect is DamageEffect and not effect.target_self:
+			power += (effect as DamageEffect).power
+	return power

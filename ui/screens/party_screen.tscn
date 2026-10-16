@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://ui/screens/screen_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/ui/party_screen.gd" id="2_screen"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/party_member_card.tscn" id="3_card"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/monster_summary_panel.tscn" id="4_summary"]
+
+[node name="PartyScreen" instance=ExtResource("1_base")]
+visible = false
+script = ExtResource("2_screen")
+card_scene = ExtResource("3_card")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"ScreenMargin"
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "Party"
+horizontal_alignment = 1
+
+[node name="Columns" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="CardScroll" type="ScrollContainer" parent="Margin/Content/Columns"]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="Cards" type="VBoxContainer" parent="Margin/Content/Columns/CardScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CompactVBox"
+
+[node name="Summary" parent="Margin/Content/Columns" instance=ExtResource("4_summary")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0

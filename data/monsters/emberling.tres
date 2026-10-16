@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/moves/ember.tres" id="4_ember"]
 [ext_resource type="Resource" path="res://data/moves/fire_breath.tres" id="5_fire_breath"]
 [ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="6_species_data"]
-[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_ember.tscn" id="7_model"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_slime_ember.tscn" id="7_model"]
 
 [sub_resource type="Resource" id="Resource_learn_tackle"]
 script = ExtResource("2_learnset_entry")

@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/element_badge.gd" id="1_badge"]
+
+[node name="ElementBadge" type="PanelContainer"]
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"ElementBadgeNeutral"
+script = ExtResource("1_badge")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ElementBadgeLabel"
+horizontal_alignment = 1
+vertical_alignment = 1

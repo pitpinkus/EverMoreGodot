@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/damage_effect.gd" id="1_damage_effect"]
+[ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
+[ext_resource type="Script" path="res://scripts/resources/move_data.gd" id="3_move_data"]
+[ext_resource type="Resource" path="res://data/vfx/melee_hit_vfx.tres" id="4_vfx"]
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("1_damage_effect")
+power = 40
+
+[resource]
+script = ExtResource("3_move_data")
+display_name = "New Move"
+description = "Describe what the move does."
+target_kind = 1
+max_range = 2.0
+effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_damage")])
+element = 5
+accuracy = 95
+vfx = ExtResource("4_vfx")

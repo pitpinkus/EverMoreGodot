@@ -1,17 +1,16 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/choice_row.gd" id="1_row"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/entry_row_content.tscn" id="2_content"]
 
 [node name="ChoiceRow" type="Button"]
+custom_minimum_size = Vector2(0, 44)
 size_flags_horizontal = 3
 focus_mode = 2
 theme_type_variation = &"ListRowButton"
-alignment = 0
-text_overrun_behavior = 3
 script = ExtResource("1_row")
 
-[node name="DetailLabel" type="Label" parent="."]
-unique_name_in_owner = true
+[node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,6 +18,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_type_variation = &"ListRowDetailLabel"
-horizontal_alignment = 2
-vertical_alignment = 1
+theme_type_variation = &"ListRowMargin"
+
+[node name="Content" parent="Margin" instance=ExtResource("2_content")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2

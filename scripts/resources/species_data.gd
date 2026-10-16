@@ -20,9 +20,10 @@ extends GameDataEntry
 ## Base chance to be caught (0..1) before HP and orb modifiers.
 @export_range(0.0, 1.0, 0.01) var catch_rate: float = 0.5
 @export var learnset: Array[LearnsetEntry] = []
-## Small portrait (turn timeline). Null = the UI shows the name's coloured first letter.
+## Hand-made portrait (turn timeline, party). Null = PortraitCache photographs the model.
 @export var icon: Texture2D
-## Visual put into a BattleMonster's %Visual. Null = no model.
+## Model shown in battle and on overworld wild monsters. Its root must be a
+## MonsterModel (inherit prefabs/characters/monster_model.tscn). Null = no model.
 @export var model_scene: PackedScene
 
 
@@ -43,6 +44,20 @@ func get_base_stat(stat: BattleTypes.Stat) -> int:
 		BattleTypes.Stat.DODGE:
 			return base_dodge
 	return 0
+
+
+## A new instance of model_scene, or null (with a warning) if there is none or its
+## root is not a MonsterModel. The caller adds it to the tree.
+func instantiate_model() -> MonsterModel:
+	if model_scene == null:
+		push_warning("SpeciesData '%s' has no model_scene." % id)
+		return null
+	var root: Node = model_scene.instantiate()
+	var model: MonsterModel = root as MonsterModel
+	if model == null:
+		push_error("SpeciesData '%s': model_scene root is not a MonsterModel." % id)
+		root.free()
+	return model
 
 
 ## Moves learned at or below level, in learnset order (lowest level first).

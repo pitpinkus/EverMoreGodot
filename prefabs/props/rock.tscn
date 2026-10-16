@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[node name="Rock" type="StaticBody3D"]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

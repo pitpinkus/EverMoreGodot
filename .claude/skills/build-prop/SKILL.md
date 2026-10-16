@@ -9,6 +9,7 @@ Every prop is a **self-contained prefab**: a flat file `res://prefabs/props/<pro
 
 ## 1. Check what exists
 - `Glob res://prefabs/props/*.tscn` — is there a prop this is a variant of? Then make an **inherited scene** or reuse it with different `@export` values (R2). A "moving platform" is `platform` + a `PathMover`/`Mover` component, not a new platform.
+- Obstacles (rocks, boulders, stumps that block movement) are inherited variants of `res://prefabs/props/rock.tscn`, a script-less base (`StaticBody3D` on physics layer 1 + `CollisionShape3D`) that is never placed on its own. Each variant (`rock_04.tscn`, `rock_07.tscn`, ...) adds its FBX model from `res://assets/models/props/<pack>/` and a convex hull shape. A new obstacle = a new inherited variant, not a new base. In battle maps they block movement through the navmesh (see `build-level`).
 - `Glob res://scripts/components/*.gd` and `res://prefabs/components/*.tscn` — reuse components: `InteractableComponent`, `HealthComponent` (breakables), `HitboxComponent` (hazards), `Mover` (moving things), `Pickup`...
 
 ## 2. Choose the root
@@ -41,7 +42,7 @@ Variants are inherited scenes, flat in the same folder: `prefabs/props/platform.
 ## 5. Done checklist
 - [ ] Scene is `res://prefabs/props/<name>.tscn` (flat, no subfolder); script, if any, is `res://scripts/props/<name>.gd` (R11).
 - [ ] Works standalone in an empty scene (R2).
-- [ ] Reuses existing components; no logic duplicated from another prop (R1).
+- [ ] Reuses existing components; no logic duplicated from another prop (R1). Obstacles are inherited variants of `rock.tscn` (model + convex hull), not new bases (R1, R2).
 - [ ] Variants are inherited scenes (R2).
 - [ ] All tunables exported; content in Resources (R6).
 - [ ] Materials are shared `toon_lit` ShaderMaterials in `res://materials/` with `rim_amount` left at 0, no `next_pass` hull and no hard-coded `toon_*` globals (R1, R6, R11).

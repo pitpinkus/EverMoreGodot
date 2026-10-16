@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://assets/models/monsters/rpg_monster_duo/turtle_shell_mesh.fbx" id="2_fbx"]
+[ext_resource type="Material" path="res://materials/monster_duo_toon.tres" id="3_material"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_duo/animations/turtle_shell/idle_battle.fbx" id="4_idle_battle"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_duo/animations/turtle_shell/walk.fbx" id="5_walk"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_duo/animations/turtle_shell/attack_01.fbx" id="6_attack_01"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_duo/animations/turtle_shell/get_hit.fbx" id="7_get_hit"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_duo/animations/turtle_shell/die.fbx" id="8_die"]
+
+[node name="MonsterModelTurtleShell" instance=ExtResource("1_base")]
+
+[node name="AnimationComponent" parent="." index="0" node_paths=PackedStringArray("animation_player")]
+animation_player = NodePath("../AnimationPlayer")
+animation_overrides = Dictionary[StringName, StringName]({&"idle": &"idle_battle/Take 001", &"walk": &"walk/Take 001", &"attack": &"attack_01/Take 001", &"hit": &"get_hit/Take 001", &"faint": &"die/Take 001"})
+
+[node name="PortraitCamera" parent="." index="1"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.45, -2.1)
+
+[node name="Model" parent="." index="2" instance=ExtResource("2_fbx")]
+transform = Transform3D(-0.85, 0, -7.430936e-08, 0, 0.85, 0, 7.430936e-08, 0, -0.85, 0, 0, 0)
+
+[node name="TurtleShell" parent="Model/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("3_material")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+root_node = NodePath("../Model")
+libraries = {
+&"idle_battle": ExtResource("4_idle_battle"),
+&"walk": ExtResource("5_walk"),
+&"attack_01": ExtResource("6_attack_01"),
+&"get_hit": ExtResource("7_get_hit"),
+&"die": ExtResource("8_die")
+}

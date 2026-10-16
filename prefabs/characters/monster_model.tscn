@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/characters/monster_model.gd" id="1_model"]
+[ext_resource type="PackedScene" path="res://prefabs/components/animation_component.tscn" id="2_animation"]
+
+[node name="MonsterModel" type="Node3D" node_paths=PackedStringArray("animation", "portrait_camera")]
+editor_description = "Base of every monster model: faces -Z with its feet at the origin. Inherited scenes add the visuals, an AnimationPlayer and the AnimationComponent overrides, and move PortraitCamera to frame the face."
+script = ExtResource("1_model")
+animation = NodePath("AnimationComponent")
+portrait_camera = NodePath("PortraitCamera")
+
+[node name="AnimationComponent" parent="." instance=ExtResource("2_animation")]
+
+[node name="PortraitCamera" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.7, -1.6)

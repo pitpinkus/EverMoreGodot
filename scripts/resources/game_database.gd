@@ -8,3 +8,4 @@ extends Resource
 @export var moves: Array[MoveData] = []
 @export var items: Array[ItemData] = []
 @export var statuses: Array[StatusEffectData] = []
+@export var pockets: Array[ItemPocket] = []

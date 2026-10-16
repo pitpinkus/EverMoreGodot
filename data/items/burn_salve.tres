@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="3_battle_effect"]
 [ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="4_item_data"]
 [ext_resource type="Resource" path="res://data/vfx/heal_vfx.tres" id="5_vfx"]
+[ext_resource type="Resource" path="res://data/items/pockets/medicine.tres" id="90_pocket"]
 
 [sub_resource type="Resource" id="Resource_cure"]
 script = ExtResource("2_cure_status_effect")
@@ -19,6 +20,7 @@ target_kind = 2
 max_range = 5.0
 effects = Array[ExtResource("3_battle_effect")]([SubResource("Resource_cure")])
 usable_in = 1
+pocket = ExtResource("90_pocket")
 consumed_on_use = true
 max_stack = 99
 vfx = ExtResource("5_vfx")

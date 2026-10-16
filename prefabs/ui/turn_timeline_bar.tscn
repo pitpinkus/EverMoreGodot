@@ -2,16 +2,17 @@
 
 [ext_resource type="Script" path="res://scripts/ui/turn_timeline_bar.gd" id="1_bar"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/turn_slot.tscn" id="2_slot"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/turn_slot_current.tscn" id="3_current_slot"]
 
 [node name="TurnTimelineBar" type="PanelContainer"]
 mouse_filter = 2
-theme_type_variation = &"BattlePanel"
+theme_type_variation = &"TurnTimelinePanel"
 script = ExtResource("1_bar")
 slot_scene = ExtResource("2_slot")
+current_slot_scene = ExtResource("3_current_slot")
 
-[node name="Slots" type="HBoxContainer" parent="."]
+[node name="Slots" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_type_variation = &"CompactHBox"
-alignment = 1
+theme_type_variation = &"CompactVBox"

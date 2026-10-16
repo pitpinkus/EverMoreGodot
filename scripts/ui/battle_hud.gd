@@ -1,34 +1,44 @@
 class_name BattleHud
 extends Control
-## Battle screen overlay: unit status panels, the command menu, the move/item list,
-## the message log, whose turn it is, the upcoming turn order and an input hint.
+## Battle screen overlay: unit status panels, the command menu (wide Move button with
+## the steps left, big Fight / Bag / Monsters / Run, small End Turn), the shared list
+## (moves, monsters), the bag, the message log, whose turn it is, the upcoming turn
+## order and an input hint.
 ## Shows what it is told and reports choices through signals; it makes no battle
 ## decisions.
 
 signal command_chosen(command: Command)
-## Picked index in the list from show_choices, or -1 if cancelled.
+## Picked index from show_choices / show_bag (into the entries given), or -1 if cancelled.
 signal choice_finished(index: int)
+## The list or the bag opened or closed; while one is open its keys (incl. tabs) belong to it.
+signal list_visibility_changed(open: bool)
+## The command menu was shown or hidden; while shown the arrow keys / stick move its focus.
+signal command_menu_visibility_changed(open: bool)
 
-enum Command { MOVE, ATTACK, ITEM, RUN, END_TURN }
+enum Command { MOVE, FIGHT, BAG, MONSTERS, RUN, END_TURN }
 
 const TURN_FORMAT: String = "%s's turn"
+const MOVE_FORMAT: String = "Move · %.1f m left"
 
 @export var status_panel_scene: PackedScene
 
 var _panels: Dictionary[BattleMonster, MonsterStatusPanel] = {}
+var _list_open: bool = false
 
 @onready var _player_panels: Container = %PlayerPanels
 @onready var _enemy_panels: Container = %EnemyPanels
 @onready var _command_menu: Control = %CommandMenu
 @onready var _choice_list: ChoiceListPanel = %ChoiceList
+@onready var _bag: BagPanel = %BagPanel
 @onready var _battle_log: BattleLog = %BattleLog
 @onready var _turn_label: Label = %TurnLabel
 @onready var _hint_label: Label = %HintLabel
 @onready var _turn_timeline: TurnTimelineBar = %TurnTimeline
 @onready var _command_buttons: Dictionary[Command, Button] = {
 	Command.MOVE: %MoveButton,
-	Command.ATTACK: %AttackButton,
-	Command.ITEM: %ItemButton,
+	Command.FIGHT: %FightButton,
+	Command.BAG: %BagButton,
+	Command.MONSTERS: %MonstersButton,
 	Command.RUN: %RunButton,
 	Command.END_TURN: %EndTurnButton,
 }
@@ -40,6 +50,10 @@ func _ready() -> void:
 	for command: Command in _command_buttons:
 		_command_buttons[command].pressed.connect(_on_command_pressed.bind(command))
 	_choice_list.choice_finished.connect(choice_finished.emit)
+	_bag.choice_finished.connect(choice_finished.emit)
+	_choice_list.visibility_changed.connect(_on_list_visibility_changed)
+	_bag.visibility_changed.connect(_on_list_visibility_changed)
+	_command_menu.visibility_changed.connect(_on_command_menu_visibility_changed)
 	_command_menu.hide()
 	_hint_label.text = ""
 	_turn_label.text = ""
@@ -68,6 +82,11 @@ func show_commands(enabled: Dictionary[Command, bool]) -> void:
 		focus_order[0].grab_focus.call_deferred()
 
 
+## Shows how far the acting unit can still walk on the Move button.
+func set_steps_left(metres: float) -> void:
+	_command_buttons[Command.MOVE].text = MOVE_FORMAT % metres
+
+
 func hide_commands() -> void:
 	_command_menu.hide()
 
@@ -75,6 +94,11 @@ func hide_commands() -> void:
 ## Opens the shared list with entries; the result arrives as choice_finished.
 func show_choices(title: String, entries: Array[ChoiceEntry]) -> void:
 	_choice_list.open(title, entries)
+
+
+## Opens the bag with entries (from ItemEntryBuilder) in pockets; the result arrives as choice_finished.
+func show_bag(pockets: Array[ItemPocket], entries: Array[ChoiceEntry]) -> void:
+	_bag.open(pockets, entries)
 
 
 func log_message(text: String) -> void:
@@ -107,6 +131,17 @@ func _add_panel(unit: BattleMonster, container: Container) -> void:
 	container.add_child(panel)
 	panel.bind(unit)
 	_panels[unit] = panel
+
+
+func _on_list_visibility_changed() -> void:
+	var list_open: bool = _choice_list.visible or _bag.visible
+	if list_open != _list_open:
+		_list_open = list_open
+		list_visibility_changed.emit(list_open)
+
+
+func _on_command_menu_visibility_changed() -> void:
+	command_menu_visibility_changed.emit(_command_menu.visible)
 
 
 func _on_command_pressed(command: Command) -> void:

@@ -1,6 +1,6 @@
 class_name CameraInputComponent
 extends Node
-## Translates camera InputMap actions (stick/arrow look, zoom) and mouse look into
+## Translates camera InputMap actions (stick/arrow look, Q/E + LB/RB turning, zoom) and mouse look into
 ## intent signals for a ThirdPersonCamera. Knows nothing about what it drives;
 ## wiring is done in the scene (look_requested -> rotate_view, zoom_requested -> zoom).
 ##
@@ -16,6 +16,8 @@ const WHEEL_ZOOM_STEP: float = 1.0
 
 @export_range(0.0001, 0.05, 0.0001) var mouse_sensitivity: float = 0.003
 @export_range(0.1, 20.0, 0.1, "suffix:rad/s") var stick_look_speed: float = 3.0
+## Yaw speed of the camera_rotate_left / camera_rotate_right buttons.
+@export_range(0.1, 20.0, 0.1, "suffix:rad/s") var rotate_speed: float = 2.0
 @export_range(0.1, 20.0, 0.1) var zoom_trigger_rate: float = 4.0
 ## Capture the mouse cursor (for mouse look) when the scene starts.
 @export var capture_mouse_on_ready: bool = true
@@ -26,6 +28,7 @@ const WHEEL_ZOOM_STEP: float = 1.0
 var _invert_y: bool = false
 var _look_sensitivity: float = 1.0
 var _look_input_enabled: bool = true
+var _rotate_input_enabled: bool = true
 
 
 func _ready() -> void:
@@ -36,15 +39,24 @@ func _ready() -> void:
 
 
 ## Turns stick/key look on or off (e.g. while the same keys pick something else).
-## Mouse look and zoom are not affected.
+## Rotate buttons, mouse look and zoom are not affected.
 func set_look_input_enabled(enabled: bool) -> void:
 	_look_input_enabled = enabled
 
 
+## Turns the camera_rotate_* buttons on or off (e.g. while they switch list tabs).
+func set_rotate_input_enabled(enabled: bool) -> void:
+	_rotate_input_enabled = enabled
+
+
 func _process(delta: float) -> void:
-	var stick: Vector2 = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down")
-	if _look_input_enabled and not stick.is_zero_approx():
-		_emit_look(stick * stick_look_speed * delta)
+	var look: Vector2 = Vector2.ZERO
+	if _look_input_enabled:
+		look = Input.get_vector("camera_left", "camera_right", "camera_up", "camera_down") * stick_look_speed
+	if _rotate_input_enabled:
+		look.x += Input.get_axis("camera_rotate_left", "camera_rotate_right") * rotate_speed
+	if not look.is_zero_approx():
+		_emit_look(look * delta)
 
 	var zoom: float = Input.get_axis("camera_zoom_out", "camera_zoom_in")
 	if not is_zero_approx(zoom):

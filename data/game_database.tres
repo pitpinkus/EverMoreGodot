@@ -24,6 +24,11 @@
 [ext_resource type="Script" path="res://scripts/resources/status_effect_data.gd" id="22_status_effect_data"]
 [ext_resource type="Resource" path="res://data/moves/agility.tres" id="23_agility"]
 [ext_resource type="Resource" path="res://data/moves/chill_gaze.tres" id="24_chill_gaze"]
+[ext_resource type="Resource" path="res://data/items/pockets/medicine.tres" id="30_pocket_medicine"]
+[ext_resource type="Resource" path="res://data/items/pockets/battle.tres" id="31_pocket_battle"]
+[ext_resource type="Resource" path="res://data/items/pockets/capture.tres" id="32_pocket_capture"]
+[ext_resource type="Resource" path="res://data/items/pockets/key.tres" id="33_pocket_key"]
+[ext_resource type="Script" path="res://scripts/resources/item_pocket.gd" id="34_item_pocket"]
 
 [resource]
 script = ExtResource("1_game_database")
@@ -32,3 +37,4 @@ species = Array[ExtResource("6_species_data")]([ExtResource("3_emberling"), ExtR
 moves = Array[ExtResource("13_move_data")]([ExtResource("7_tackle"), ExtResource("8_ember"), ExtResource("9_fire_breath"), ExtResource("10_armor_up"), ExtResource("11_heal_pulse"), ExtResource("12_growl"), ExtResource("23_agility"), ExtResource("24_chill_gaze")])
 items = Array[ExtResource("20_item_data")]([ExtResource("14_potion"), ExtResource("15_field_ration"), ExtResource("16_power_tonic"), ExtResource("17_burn_salve"), ExtResource("18_capture_orb"), ExtResource("19_old_key")])
 statuses = Array[ExtResource("22_status_effect_data")]([ExtResource("21_burn")])
+pockets = Array[ExtResource("34_item_pocket")]([ExtResource("30_pocket_medicine"), ExtResource("31_pocket_battle"), ExtResource("32_pocket_capture"), ExtResource("33_pocket_key")])

@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_slime.tscn" id="1_slime"]
+[ext_resource type="Material" path="res://materials/monster_slime_ember.tres" id="2_material"]
+
+[node name="MonsterModelSlimeEmber" instance=ExtResource("1_slime")]
+
+[node name="Slime" parent="Model/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("2_material")

@@ -9,6 +9,7 @@ var _species: Dictionary[StringName, GameDataEntry] = {}
 var _moves: Dictionary[StringName, GameDataEntry] = {}
 var _items: Dictionary[StringName, GameDataEntry] = {}
 var _statuses: Dictionary[StringName, GameDataEntry] = {}
+var _pockets: Array[ItemPocket] = []
 
 
 func _ready() -> void:
@@ -23,7 +24,11 @@ func _ready() -> void:
 	_moves = _index(_database.moves, "move")
 	_items = _index(_database.items, "item")
 	_statuses = _index(_database.statuses, "status")
+	_index(_database.pockets, "pocket")
+	_pockets.assign(_database.pockets.filter(func(pocket: ItemPocket) -> bool: return pocket != null))
+	_pockets.sort_custom(func(a: ItemPocket, b: ItemPocket) -> bool: return a.order < b.order)
 	_validate_overworld_items()
+	_validate_item_pockets()
 
 
 func get_rules() -> BattleRules:
@@ -45,6 +50,11 @@ func get_item(id: StringName) -> ItemData:
 
 func get_status(id: StringName) -> StatusEffectData:
 	return _statuses.get(id) as StatusEffectData
+
+
+## Bag pockets, in tab order.
+func get_pockets() -> Array[ItemPocket]:
+	return _pockets
 
 
 ## Maps each entry's id to the entry; reports missing entries and empty or duplicate ids.
@@ -74,3 +84,10 @@ func _validate_overworld_items() -> void:
 			if effect != null and not effect.works_outside_battle():
 				push_error("DataRegistry: item '%s' is usable in the overworld but has a battle-only %s." \
 						% [item.id, effect.get_script().get_global_name()])
+
+
+## Every item must be in a pocket the database lists, or the bag can't show it.
+func _validate_item_pockets() -> void:
+	for item: ItemData in _database.items:
+		if item != null and not _pockets.has(item.pocket):
+			push_error("DataRegistry: item '%s' has no pocket listed in the database." % item.id)

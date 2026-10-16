@@ -3,14 +3,27 @@
 [ext_resource type="Script" path="res://scripts/levels/battle_map_base.gd" id="1_map"]
 [ext_resource type="PackedScene" path="res://prefabs/props/environment_rig.tscn" id="2_environment_rig"]
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_arena"]
+geometry_parsed_geometry_type = 1
+geometry_collision_mask = 1
+geometry_source_geometry_mode = 1
+geometry_source_group_name = &"battle_nav_source"
+cell_size = 0.25
+agent_height = 1.25
+agent_radius = 0.5
+
 [node name="BattleMap" type="Node3D"]
 script = ExtResource("1_map")
 
 [node name="EnvironmentRig" parent="." instance=ExtResource("2_environment_rig")]
 
-[node name="Terrain" type="Node3D" parent="."]
+[node name="Terrain" type="Node3D" parent="." groups=["battle_nav_source"]]
 
-[node name="Props" type="Node3D" parent="."]
+[node name="Props" type="Node3D" parent="." groups=["battle_nav_source"]]
+
+[node name="NavRegion" type="NavigationRegion3D" parent="."]
+unique_name_in_owner = true
+navigation_mesh = SubResource("NavigationMesh_arena")
 
 [node name="PlayerSpawns" type="Node3D" parent="."]
 unique_name_in_owner = true

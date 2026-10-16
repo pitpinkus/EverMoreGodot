@@ -1,9 +1,12 @@
 class_name TurnTimelineBar
 extends PanelContainer
-## The upcoming turn order as a row of TurnSlots in %Slots, the unit acting now first.
-## Slot nodes are created once and reused. Display only (no focus, no mouse).
+## The upcoming turn order as a column of TurnSlots in %Slots, the unit acting now
+## first (in a bigger current_slot_scene slot). Slot nodes are created once and reused.
+## Display only (no focus, no mouse).
 
 @export var slot_scene: PackedScene
+## Scene of the first slot (the unit acting now or next). Null = slot_scene.
+@export var current_slot_scene: PackedScene
 ## How many upcoming turns are shown.
 @export_range(1, 20, 1) var slot_count: int = 8
 
@@ -17,7 +20,8 @@ func _ready() -> void:
 		push_error("TurnTimelineBar '%s' has no slot_scene assigned." % name)
 		return
 	for index: int in slot_count:
-		var slot: TurnSlot = slot_scene.instantiate() as TurnSlot
+		var scene: PackedScene = current_slot_scene if index == 0 and current_slot_scene != null else slot_scene
+		var slot: TurnSlot = scene.instantiate() as TurnSlot
 		_slot_container.add_child(slot)
 		slot.hide()
 		_slots.append(slot)

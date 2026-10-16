@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RebindableActionList" load_steps=16 format=3]
+[gd_resource type="Resource" script_class="RebindableActionList" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/rebindable_action_list.gd" id="1_list"]
 [ext_resource type="Script" path="res://scripts/resources/rebindable_action.gd" id="2_action"]
@@ -7,68 +7,119 @@
 script = ExtResource("2_action")
 action = &"move_forward"
 display_name = "Move forward"
+contexts = 3
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_move_back"]
 script = ExtResource("2_action")
 action = &"move_back"
 display_name = "Move back"
+contexts = 3
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_move_left"]
 script = ExtResource("2_action")
 action = &"move_left"
 display_name = "Move left"
+contexts = 3
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_move_right"]
 script = ExtResource("2_action")
 action = &"move_right"
 display_name = "Move right"
+contexts = 3
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_run"]
 script = ExtResource("2_action")
 action = &"run"
 display_name = "Run"
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_jump"]
 script = ExtResource("2_action")
 action = &"jump"
 display_name = "Jump"
+section = "Movement"
 
 [sub_resource type="Resource" id="Resource_camera_left"]
 script = ExtResource("2_action")
 action = &"camera_left"
 display_name = "Camera left"
+contexts = 3
+section = "Camera"
 
 [sub_resource type="Resource" id="Resource_camera_right"]
 script = ExtResource("2_action")
 action = &"camera_right"
 display_name = "Camera right"
+contexts = 3
+section = "Camera"
 
 [sub_resource type="Resource" id="Resource_camera_up"]
 script = ExtResource("2_action")
 action = &"camera_up"
 display_name = "Camera up"
+contexts = 3
+section = "Camera"
 
 [sub_resource type="Resource" id="Resource_camera_down"]
 script = ExtResource("2_action")
 action = &"camera_down"
 display_name = "Camera down"
+contexts = 3
+section = "Camera"
+
+[sub_resource type="Resource" id="Resource_camera_rotate_left"]
+script = ExtResource("2_action")
+action = &"camera_rotate_left"
+display_name = "Turn camera left"
+contexts = 3
+section = "Camera"
+
+[sub_resource type="Resource" id="Resource_camera_rotate_right"]
+script = ExtResource("2_action")
+action = &"camera_rotate_right"
+display_name = "Turn camera right"
+contexts = 3
+section = "Camera"
 
 [sub_resource type="Resource" id="Resource_camera_zoom_in"]
 script = ExtResource("2_action")
 action = &"camera_zoom_in"
 display_name = "Zoom in"
+contexts = 3
+section = "Camera"
 
 [sub_resource type="Resource" id="Resource_camera_zoom_out"]
 script = ExtResource("2_action")
 action = &"camera_zoom_out"
 display_name = "Zoom out"
+contexts = 3
+section = "Camera"
+
+[sub_resource type="Resource" id="Resource_confirm_point"]
+script = ExtResource("2_action")
+action = &"confirm_point"
+display_name = "Confirm point / target"
+contexts = 2
+section = "Battle"
+
+[sub_resource type="Resource" id="Resource_cancel_point"]
+script = ExtResource("2_action")
+action = &"cancel_point"
+display_name = "Cancel point / target"
+contexts = 2
+section = "Battle"
 
 [sub_resource type="Resource" id="Resource_inventory"]
 script = ExtResource("2_action")
 action = &"inventory"
 display_name = "Inventory"
+section = "Menus"
 
 [resource]
 script = ExtResource("1_list")
-actions = Array[ExtResource("2_action")]([SubResource("Resource_move_forward"), SubResource("Resource_move_back"), SubResource("Resource_move_left"), SubResource("Resource_move_right"), SubResource("Resource_run"), SubResource("Resource_jump"), SubResource("Resource_camera_left"), SubResource("Resource_camera_right"), SubResource("Resource_camera_up"), SubResource("Resource_camera_down"), SubResource("Resource_camera_zoom_in"), SubResource("Resource_camera_zoom_out"), SubResource("Resource_inventory")])
+actions = Array[ExtResource("2_action")]([SubResource("Resource_move_forward"), SubResource("Resource_move_back"), SubResource("Resource_move_left"), SubResource("Resource_move_right"), SubResource("Resource_run"), SubResource("Resource_jump"), SubResource("Resource_camera_left"), SubResource("Resource_camera_right"), SubResource("Resource_camera_up"), SubResource("Resource_camera_down"), SubResource("Resource_camera_rotate_left"), SubResource("Resource_camera_rotate_right"), SubResource("Resource_camera_zoom_in"), SubResource("Resource_camera_zoom_out"), SubResource("Resource_confirm_point"), SubResource("Resource_cancel_point"), SubResource("Resource_inventory")])
 reserved_actions = Array[StringName]([&"pause"])

@@ -23,9 +23,8 @@ Level (Node3D)                 scripts/levels/level_base.gd
 ├── %Characters (Node3D)       instanced NPC prefabs and encounter NPCs (trainer, wild_monster)
 ├── %SpawnPoints (Node3D)      Marker3D children, e.g. PlayerSpawn
 └── UI (CanvasLayer)
-    ├── PauseMenu              ui/screens/pause_menu.tscn
-    └── InventoryScreen        ui/screens/inventory_screen.tscn; must stay AFTER PauseMenu: later siblings get
-                               _unhandled_input first, so an open inventory consumes Esc/cancel before the pause menu
+    └── PauseMenu              ui/screens/pause_menu.tscn; holds %PartyScreen, %BagScreen and %SettingsMenu as submenus
+                               (the `inventory` action opens it on the Bag); don't add them to the level separately
 ```
 Future (not in the base yet, add to `level_base.tscn` only when a feature first needs it, R10): `NavigationRegion3D` (baked navmesh for wandering NPCs) and `Triggers (Node3D)` (exits, cutscene zones).
 `level_base.gd` exports: `level_id: StringName`, `music: AudioStream`, and exposes `get_spawn(name) -> Transform3D`. It emits `level_ready` after setup. (These members are the target API: add each one to `level_base.gd` when a feature first needs it, not up front, R10.) The player is **not** saved inside the level; the game/level loader instances it at a spawn point.
@@ -39,7 +38,8 @@ Future (not in the base yet, add to `level_base.tscn` only when a feature first 
 6. Add a `PlayerSpawn` marker and any named spawns used by exits/doors.
 7. (Future, when exits exist) Connect level exits via a reusable `level_exit` trigger prefab with `@export target_level: String` and `@export target_spawn: StringName`.
 8. (Future, once the level has a `NavigationRegion3D`) Rebake it after layout changes.
-9. Migrating a Unity scene: read the Unity `.unity` scene / prefabs for layout and content, then rebuild with Godot prefabs. Don't import Unity scene files.
+9. Battle maps (`BattleMap`, e.g. `levels/test_battle_map.tscn`) need a `NavigationRegion3D` named `%NavRegion` with a `NavigationMesh` (parse static colliders, collision mask 1, source group `battle_nav_source`); it is baked at runtime on map load, so don't rely on a baked copy in the scene. Put the map's `Terrain` and `Props` parent nodes in group `battle_nav_source` (the bake reads each grouped node's children; don't add the group to individual props). Obstacles are instances of rock variants (`prefabs/props/rock_04.tscn`, `rock_07.tscn`, ...; never the bare `rock.tscn` base) under `Props`, with colliders on physics layer 1. Monsters are not baked in.
+10. Migrating a Unity scene: read the Unity `.unity` scene / prefabs for layout and content, then rebuild with Godot prefabs. Don't import Unity scene files.
 
 ## 4. Done checklist
 - [ ] Scene is `res://levels/<level_name>.tscn`; any script is `res://scripts/levels/<level_name>.gd`; materials/environment in `res://materials/` (R11).
@@ -48,4 +48,5 @@ Future (not in the base yet, add to `level_base.tscn` only when a feature first 
 - [ ] No logic in the level script beyond wiring; behaviour lives in prefabs/components.
 - [ ] Has `PlayerSpawn`; exits point at existing levels/spawns.
 - [ ] Encounters come from `tall_grass` / `trainer` / `wild_monster` instances (`EncounterTrigger` based) with `Encounter` resources from `res://data/encounters/`; no new trigger scripts (R1, R2, R6).
+- [ ] Battle map: has `%NavRegion` (`NavigationRegion3D`, source group `battle_nav_source`, mask 1); `Terrain` and `Props` parents are in that group; obstacles are instanced rock variants (`rock_04.tscn`, ...; not the base) on layer 1 under `Props` (R2, R4).
 - [ ] Collision layers/masks use the named layers in Project Settings (`layer_names/3d_physics`); add names there if missing.

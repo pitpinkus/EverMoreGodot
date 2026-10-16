@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://ui/screens/screen_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/ui/inventory_screen.gd" id="2_screen"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/choice_list_panel.tscn" id="3_list"]
-[ext_resource type="PackedScene" path="res://prefabs/components/pause_while_visible_component.tscn" id="4_pause"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/bag_panel.tscn" id="4_bag"]
 
 [node name="InventoryScreen" instance=ExtResource("1_base")]
 process_mode = 3
@@ -36,14 +36,14 @@ size_flags_vertical = 4
 [node name="TitleLabel" type="Label" parent="Dimmer/Margin/Content"]
 layout_mode = 2
 theme_type_variation = &"SectionLabel"
-text = "Inventory"
+text = "Bag"
 horizontal_alignment = 1
 
 [node name="Lists" type="HBoxContainer" parent="Dimmer/Margin/Content"]
 layout_mode = 2
 alignment = 1
 
-[node name="ItemList" parent="Dimmer/Margin/Content/Lists" instance=ExtResource("3_list")]
+[node name="Bag" parent="Dimmer/Margin/Content/Lists" instance=ExtResource("4_bag")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -59,5 +59,3 @@ layout_mode = 2
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="PauseWhileVisibleComponent" parent="." node_paths=PackedStringArray("screen") instance=ExtResource("4_pause")]
-screen = NodePath("..")

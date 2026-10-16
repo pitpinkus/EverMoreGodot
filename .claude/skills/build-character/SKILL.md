@@ -49,11 +49,11 @@ Who you fight is the `Encounter` resource (`data/encounters/`), not the scene. A
 
 ### 3b. Monsters in battle are data
 - **Species:** `SpeciesData` (`scripts/resources/species_data.gd`, extends `GameDataEntry` with `id` / `display_name`), one `.tres` per species in `res://data/monsters/`: element, base stats, `learnset`, `catch_rate`, and `model_scene`.
-- **Model:** `model_scene` points to a model prefab `prefabs/characters/monster_model_<name>.tscn`, inherited from `monster_model_placeholder.tscn` (swap materials / add meshes) or a real imported model wrapper (section 2).
+- **Model:** `model_scene` points to a model prefab `prefabs/characters/monster_model_<name>.tscn`. All monster models share one base prefab `prefabs/characters/monster_model.tscn`: root `Node3D` with `scripts/characters/monster_model.gd` (`class_name MonsterModel`; exports `animation`, `portrait_camera`), an `AnimationComponent` and a `PortraitCamera` `Marker3D` that frames the face for timeline portraits. `monster_model_placeholder.tscn` and every real model wrapper (e.g. `monster_model_slime.tscn`) are **inherited scenes** of it: they add the FBX instance from `res://assets/models/monsters/<pack>/`, material overrides and `animation_overrides` (idle, walk, attack, hit, faint), and move `PortraitCamera` to fit (section 2). Colour variants (e.g. `monster_model_slime_ember.tscn`) inherit their wrapper and only swap materials. No variant gets its own script (R11). Copied FBX `.import` options may be written by hand (R9 exception, `assets/models/` only).
 - **Per-monster state:** `MonsterInstance` (`scripts/resources/monster_instance.gd`): species, level, IVs, current HP, known moves; saved via `to_dict()` / `from_dict()`. Statuses and stat stages are battle-only, on `BattleMonster`'s components.
 - **Moves and items:** `MoveData` / `ItemData` `.tres` in `res://data/moves/` and `res://data/items/` (both extend `ActionData`), whose `effects` are composable `BattleEffect` sub-resources (damage, heal, stat stage, apply/cure status, capture, ...). Status effects (burn, ...) are `StatusEffectData` in `res://data/status_effects/`. New behaviour = combine existing effects, or add one `BattleEffect` subclass.
 - **Battle logic** lives in `res://scripts/battle/` (controller, turn order, action resolver, AI, formulas); character code doesn't duplicate it (R1).
-- **Every species, move, item and status must be listed in `res://data/game_database.tres`** so `DataRegistry` can resolve ids (saves, lookups).
+- **Every species, move, item and status must be listed in `res://data/game_database.tres`** so `DataRegistry` can resolve ids (saves, lookups). Blueprint templates in `res://data/templates/` are the exception and are never listed.
 
 **A new monster = a model prefab (inherited placeholder or real model) + a species `.tres` + an entry in `data/game_database.tres`. No new scripts, no new battle scene.** When migrating, map the Unity ScriptableObjects/classes to these resources.
 
@@ -68,7 +68,7 @@ A specific character (e.g. "Blacksmith", "Slime") is usually **just a `.tres` Ch
 ## 5. Done checklist
 - [ ] Scene is a flat file in `res://prefabs/characters/`; scripts in `res://scripts/characters/` (or `scripts/components/`, `scripts/resources/`) with matching base names (R11).
 - [ ] Moving characters inherit `character_base` (directly or via player/npc/battle_monster); overworld trainers / wild monsters inherit `encounter_npc` instead (R2).
-- [ ] New monster: model prefab inherited from `monster_model_placeholder` (or a real model wrapper), species `.tres` in `data/monsters/` with `model_scene` set, listed in `data/game_database.tres`; no new scripts (R1, R2, R6).
+- [ ] New monster: model prefab is an inherited scene of `monster_model.tscn` (placeholder or FBX wrapper; FBX under `assets/models/`) or of an existing wrapper (colour variant), with no own script, species `.tres` in `data/monsters/` with `model_scene` set, listed in `data/game_database.tres`; no new scripts (R1, R2, R6).
 - [ ] Stats from `CharacterData` resource; no hard-coded numbers (R6).
 - [ ] Reuses shared components and `StateMachine`; no duplicated movement/health/AI code (R1, R3).
 - [ ] Model is an instanced model prefab under `Visual`; animation only via `AnimationComponent` wired to `state_changed`, no `play()` in states (R1, R2, R3, R4).

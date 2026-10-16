@@ -20,6 +20,16 @@ const STAT_NAMES: Dictionary[Stat, String] = {
 	Stat.DODGE: "Dodge",
 }
 
+## Player-facing element names; ElementBadge also builds its theme variation from them.
+const ELEMENT_NAMES: Dictionary[Element, String] = {
+	Element.FIRE: "Fire",
+	Element.WATER: "Water",
+	Element.WIND: "Wind",
+	Element.GRASS: "Grass",
+	Element.ELECTRIC: "Electric",
+	Element.NEUTRAL: "Neutral",
+}
+
 ## Short stat names for tight spots (floating numbers, badges).
 const STAT_ABBREVIATIONS: Dictionary[Stat, String] = {
 	Stat.HP: "HP",
@@ -38,3 +48,7 @@ static func get_stat_name(stat: Stat) -> String:
 
 static func get_stat_abbreviation(stat: Stat) -> String:
 	return STAT_ABBREVIATIONS.get(stat, "")
+
+
+static func get_element_name(element: Element) -> String:
+	return ELEMENT_NAMES.get(element, "")

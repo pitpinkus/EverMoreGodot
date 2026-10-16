@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ItemPocket" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/item_pocket.gd" id="1_pocket"]
+
+[resource]
+script = ExtResource("1_pocket")
+id = &"key"
+display_name = "Key Items"
+order = 3

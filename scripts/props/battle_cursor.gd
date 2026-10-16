@@ -2,40 +2,47 @@ class_name BattleCursor
 extends Node3D
 ## 3D cursor for picking where a unit walks (pick_point) or which unit an action
 ## targets (pick_unit). Results arrive as point_picked / unit_picked. Hidden while idle.
+## While picking a point, %ReachDecal shows the ReachableArea on the ground and the
+## marker switches to unreachable_material outside it.
 ##
 ## Mouse: the cursor follows the mouse over the ground (or the unit under it);
-## confirm_point (left click) confirms, cancel_point (right click) cancels.
-## Gamepad: the left stick (move_* actions) moves the cursor relative to the camera;
-## stick movement is ignored while the keyboard/mouse is the active device, so the
-## keyboard does not move it. Keyboard and gamepad confirm/cancel with confirm_point /
-## cancel_point or ui_cancel. Units cycle with ui_left / ui_right / move_left /
-## move_right; while cycling, unit_picking_changed lets the owner turn off camera key
-## look (the arrow keys are also camera keys).
+## confirm_point (left click) confirms, cancel_point (right click) cancels. When the
+## camera pans (on_camera_moved) the point under the mouse is picked again.
+## Gamepad: the cursor stays pinned to the camera focus (screen centre); the stick
+## pans the camera (BattleCameraRig), not the cursor. Keyboard and gamepad
+## confirm/cancel with confirm_point / cancel_point or ui_cancel. Units cycle with
+## ui_left / ui_right / move_left / move_right. mode_changed tells the owner which
+## camera inputs to allow.
 ##
 ## R7 exception: the mouse position is read from InputEventMouseMotion / the click
-## event, because a pointer position cannot be bound to an InputMap action.
+## event / the viewport, because a pointer position cannot be bound to an InputMap action.
 
 signal point_picked(confirmed: bool, point: Vector3)
 ## The chosen unit, or null if cancelled.
 signal unit_picked(target: BattleMonster)
-## The cursor moved by stick, cycling or a new pick (not by the mouse, so a camera
-## following it can't drag the point under the mouse along).
+## The cursor jumped by target cycling or a new pick (not by the mouse or the camera,
+## so a camera following it can't drag the point under the mouse along).
 signal moved(position: Vector3)
-signal unit_picking_changed(active: bool)
-## A point was confirmed closer than min_distance to the origin and ignored.
-signal point_rejected
+## Picking started (POINT / UNIT) or ended (IDLE).
+signal mode_changed(mode: Mode)
+## A confirmed point was ignored: too close to the origin or outside the reachable area.
+signal point_rejected(reason: RejectReason)
 
 const PREVIOUS_ACTIONS: Array[StringName] = [&"ui_left", &"move_left"]
 const NEXT_ACTIONS: Array[StringName] = [&"ui_right", &"move_right"]
 const CANCEL_ACTIONS: Array[StringName] = [&"cancel_point", &"ui_cancel"]
 
 enum Mode { IDLE, POINT, UNIT }
+enum RejectReason { TOO_CLOSE, UNREACHABLE }
 
-## Its yaw defines "forward" for stick movement (the battle camera rig).
-@export var camera_pivot: Node3D
-@export_range(0.5, 30.0, 0.1, "suffix:m/s") var move_speed: float = 6.0
-## Radius of the %RangeRing mesh at scale 1; the ring is scaled to the walk range.
-@export_range(0.01, 10.0, 0.01, "suffix:m") var ring_base_radius: float = 1.0
+## Reach decal colour inside the reachable area and along its edge.
+@export var reach_fill_color: Color = Color(1.0, 1.0, 1.0, 0.15)
+@export var reach_edge_color: Color = Color(1.0, 1.0, 1.0, 0.8)
+## Vertical size of %ReachDecal's projection box (covers bumps in the ground).
+@export_range(0.1, 50.0, 0.1, "suffix:m") var decal_height: float = 4.0
+## Marker material where the point can be walked to / where it can't. Null = keep the scene's.
+@export var reachable_material: Material
+@export var unreachable_material: Material
 ## Layers the mouse ray treats as ground when picking a point.
 @export_flags_3d_physics var ground_mask: int = 1
 ## Layers the mouse ray checks for units when picking a target.
@@ -44,15 +51,13 @@ enum Mode { IDLE, POINT, UNIT }
 
 var _mode: Mode = Mode.IDLE
 var _origin: Vector3 = Vector3.ZERO
-var _radius: float = 0.0
+var _area: ReachableArea
 var _min_distance: float = 0.0
-var _arena_center: Vector3 = Vector3.ZERO
-var _arena_radius: float = INF
 var _candidates: Array[BattleMonster] = []
 var _candidate_index: int = 0
 
-@onready var _marker: Node3D = %Marker
-@onready var _range_ring: Node3D = %RangeRing
+@onready var _marker: MeshInstance3D = %Marker
+@onready var _reach_decal: Decal = %ReachDecal
 @onready var _ground_ray: RayCast3D = %GroundRay
 
 
@@ -60,26 +65,17 @@ func _ready() -> void:
 	_set_idle()
 
 
-## The cursor never leaves the circle of radius around center.
-func set_arena(center: Vector3, radius: float) -> void:
-	_arena_center = center
-	_arena_radius = radius
-
-
-## Lets the player pick a ground point within radius of origin. Answer: point_picked.
-## Confirming a point closer than min_distance to origin is ignored (point_rejected).
-func pick_point(origin: Vector3, radius: float, min_distance: float = 0.0) -> void:
-	_mode = Mode.POINT
+## Lets the player pick a ground point within area.radius of origin. Answer: point_picked.
+## Confirming a point closer than min_distance to origin or outside area is ignored
+## (point_rejected).
+func pick_point(origin: Vector3, area: ReachableArea, min_distance: float = 0.0) -> void:
 	_origin = origin
-	_radius = radius
+	_area = area
 	_min_distance = min_distance
 	global_position = origin
-	_range_ring.global_position = origin
-	var ring_scale: float = radius / ring_base_radius
-	_range_ring.scale = Vector3(ring_scale, 1.0, ring_scale)
-	_range_ring.show()
+	_set_mode(Mode.POINT)
+	_show_reach(area)
 	_show_at(origin)
-	set_process(true)
 
 
 ## Lets the player pick one of candidates. Answer: unit_picked.
@@ -88,18 +84,20 @@ func pick_unit(candidates: Array[BattleMonster]) -> void:
 		push_error("BattleCursor: pick_unit() called without candidates.")
 		unit_picked.emit(null)
 		return
-	_mode = Mode.UNIT
 	_candidates = candidates
+	_set_mode(Mode.UNIT)
 	_select_candidate(0)
-	unit_picking_changed.emit(true)
 
 
-func _process(delta: float) -> void:
-	if InputDeviceTracker.current_device != InputDeviceTracker.Device.GAMEPAD:
+## The camera focus moved to point. While picking a point the gamepad cursor follows
+## it; with keyboard/mouse the point under the mouse is picked again.
+func on_camera_moved(point: Vector3) -> void:
+	if _mode != Mode.POINT:
 		return
-	var input: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	if not input.is_zero_approx():
-		_show_at(_clamp_point(global_position + CameraRelativeInput.to_world(input, camera_pivot) * move_speed * delta))
+	if InputDeviceTracker.current_device == InputDeviceTracker.Device.GAMEPAD:
+		_show_at(_clamp_point(point), false)
+	else:
+		_follow_mouse(get_viewport().get_mouse_position())
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -113,7 +111,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		get_viewport().set_input_as_handled()
 		if _mode == Mode.POINT and BattleFormulas.flat_distance(_origin, global_position) < _min_distance:
-			point_rejected.emit()
+			point_rejected.emit(RejectReason.TOO_CLOSE)
+		elif _mode == Mode.POINT and not _area.contains(global_position):
+			point_rejected.emit(RejectReason.UNREACHABLE)
 		else:
 			_finish(true)
 	elif _is_cancel(event):
@@ -153,10 +153,18 @@ func _raycast_mouse(screen_position: Vector2, mask: int) -> Dictionary:
 	return get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, to, mask))
 
 
-## point limited to the walk radius around the origin and to the arena.
+## point limited to the straight-line walk radius around the origin.
 func _clamp_point(point: Vector3) -> Vector3:
-	var wanted: Vector3 = _origin + BattleFormulas.flat_offset(_origin, point).limit_length(_radius)
-	return _arena_center + BattleFormulas.flat_offset(_arena_center, wanted).limit_length(_arena_radius)
+	return _origin + BattleFormulas.flat_offset(_origin, point).limit_length(_area.radius)
+
+
+## Projects area's reach texture onto the ground around it.
+func _show_reach(area: ReachableArea) -> void:
+	var extent: float = area.get_grid_extent()
+	_reach_decal.texture_albedo = area.make_texture(reach_fill_color, reach_edge_color)
+	_reach_decal.size = Vector3(extent, decal_height, extent)
+	_reach_decal.global_position = area.origin
+	_reach_decal.show()
 
 
 func _select_candidate(index: int, report: bool = true) -> void:
@@ -186,9 +194,17 @@ func _show_at(point: Vector3, report: bool = true) -> void:
 	_ground_ray.force_raycast_update()
 	if _ground_ray.is_colliding():
 		global_position.y = _ground_ray.get_collision_point().y
+	if _mode == Mode.POINT:
+		_set_marker_reachable(_area.contains(global_position))
 	_marker.show()
 	if report:
 		moved.emit(global_position)
+
+
+func _set_marker_reachable(reachable: bool) -> void:
+	var material: Material = reachable_material if reachable else unreachable_material
+	if material != null:
+		_marker.material_override = material
 
 
 func _finish(confirmed: bool) -> void:
@@ -199,13 +215,20 @@ func _finish(confirmed: bool) -> void:
 	if mode == Mode.POINT:
 		point_picked.emit(confirmed, point)
 	else:
-		unit_picking_changed.emit(false)
 		unit_picked.emit(target)
 
 
 func _set_idle() -> void:
-	_mode = Mode.IDLE
 	_candidates = []
-	set_process(false)
+	_area = null
+	_set_marker_reachable(true)
 	_marker.hide()
-	_range_ring.hide()
+	_reach_decal.hide()
+	_set_mode(Mode.IDLE)
+
+
+func _set_mode(mode: Mode) -> void:
+	if mode == _mode:
+		return
+	_mode = mode
+	mode_changed.emit(mode)

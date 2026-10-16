@@ -2,6 +2,9 @@ class_name ChoiceEntry
 extends RefCounted
 ## One row of a ChoiceListPanel: what it shows and what it stands for.
 
+## element value for rows without an element badge.
+const NO_ELEMENT: int = -1
+
 var text: String = ""
 ## Short extra info shown on the right of the row (count, accuracy, ...).
 var detail: String = ""
@@ -10,6 +13,8 @@ var description: String = ""
 var enabled: bool = true
 ## Shown instead of the description when a disabled row is pressed.
 var disabled_reason: String = ""
+## BattleTypes.Element shown as a badge, or NO_ELEMENT.
+var element: int = NO_ELEMENT
 ## What the row stands for (an ItemData, a MonsterInstance, ...).
 var payload: Variant
 

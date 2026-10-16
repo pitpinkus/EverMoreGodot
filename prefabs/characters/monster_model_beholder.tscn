@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://assets/models/monsters/rpg_monster_partners/beholder_mesh.fbx" id="2_fbx"]
+[ext_resource type="Material" path="res://materials/monster_partners_toon.tres" id="3_material"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_partners/animations/beholder/idle_battle.fbx" id="4_idle_battle"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_partners/animations/beholder/walk_fwd.fbx" id="5_walk_fwd"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_partners/animations/beholder/attack_01.fbx" id="6_attack_01"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_partners/animations/beholder/get_hit.fbx" id="7_get_hit"]
+[ext_resource type="AnimationLibrary" path="res://assets/models/monsters/rpg_monster_partners/animations/beholder/die.fbx" id="8_die"]
+
+[node name="MonsterModelBeholder" instance=ExtResource("1_base")]
+
+[node name="AnimationComponent" parent="." index="0" node_paths=PackedStringArray("animation_player")]
+animation_player = NodePath("../AnimationPlayer")
+animation_overrides = Dictionary[StringName, StringName]({&"idle": &"idle_battle/Take 001", &"walk": &"walk_fwd/Take 001", &"attack": &"attack_01/Take 001", &"hit": &"get_hit/Take 001", &"faint": &"die/Take 001"})
+
+[node name="PortraitCamera" parent="." index="1"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.9, -1.5)
+
+[node name="Model" parent="." index="2" instance=ExtResource("2_fbx")]
+transform = Transform3D(-0.62, 0, -5.420212e-08, 0, 0.62, 0, 5.420212e-08, 0, -0.62, 0, 0, 0)
+
+[node name="BeholderMesh" parent="Model/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("3_material")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+root_node = NodePath("../Model")
+libraries = {
+&"idle_battle": ExtResource("4_idle_battle"),
+&"walk_fwd": ExtResource("5_walk_fwd"),
+&"attack_01": ExtResource("6_attack_01"),
+&"get_hit": ExtResource("7_get_hit"),
+&"die": ExtResource("8_die")
+}

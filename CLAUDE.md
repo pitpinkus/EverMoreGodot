@@ -73,7 +73,7 @@ All UI uses the project theme at `res://ui/theme/main_theme.tres` and theme type
 
 ### R9 — Keep files valid and small
 - Hand-written `.tscn` / `.tres` must be valid Godot 4 text format. Don't invent `uid://` values: write `ext_resource` entries with `path=` only and let the editor add uids.
-- Never edit anything in `.godot/` and don't commit `*.import` changes by hand.
+- Never edit anything in `.godot/` and don't commit `*.import` changes by hand. Only exception: for third-party model files copied into `res://assets/models/`, an agent may write their `.import` options (import as animation library, scale, root type). Nothing in `.godot/` may be touched.
 - One responsibility per script. A script over ~300 lines is a sign it should be split.
 
 ### R10 — No dead code
@@ -81,7 +81,8 @@ No commented-out code, unused variables, unused exports, or leftover `print()` d
 
 ### R11 — File structure by type
 Files are separated by **type** into top-level folders (see Folder layout below):
-- **All `.gd` files live under `res://scripts/<domain>/`** (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`, `battle`, `vfx`). No `.gd` anywhere else. Custom `Resource` class scripts go in `scripts/resources/`.
+- **All `.gd` files live under `res://scripts/<domain>/`** (`autoload`, `components`, `characters`, `props`, `levels`, `ui`, `resources`, `battle`, `vfx`, `editor`). No `.gd` anywhere else. Custom `Resource` class scripts go in `scripts/resources/`. `scripts/editor/` holds editor-only `@tool` code; it is never referenced by game code.
+- Exception: `res://addons/<plugin>/` may contain only `plugin.cfg` and at most one entry `.gd` shim that `extends` a script in `scripts/editor/`. Third-party addons are exempt as a whole. Export presets must exclude `addons/*` and `scripts/editor/*`.
 - **`.tscn` files live only in `res://prefabs/<category>/`, `res://levels/` or `res://ui/screens/`.** Prefabs and levels are **flat files** per category: `prefabs/props/block.tscn`, `levels/test_overworld.tscn`. No per-item subfolder (no `prefabs/props/block/block.tscn`).
 - A scene's root script keeps the **same snake_case base name** as the scene, under the matching domain: `prefabs/props/block.tscn` ↔ `scripts/props/block.gd`, `levels/level_base.tscn` ↔ `scripts/levels/level_base.gd`. Inherited variants without their own script (e.g. `player.tscn`) are fine.
 - Content/stats `.tres` go in `res://data/` (category subfolders allowed, e.g. `data/movement/`). Materials, environments and other visual `.tres` go in `res://materials/`. The theme stays in `res://ui/theme/`.
@@ -118,6 +119,7 @@ res://
     resources/          custom Resource class scripts (movement_stats.gd, ...)
     battle/             battle logic: manager, controllers/AI, turn order, formulas
     vfx/                visual effect scripts: projectiles, one-shot particle effects, floating text
+    editor/             editor-only @tool code (plugins, blueprint creator); never referenced by game code
   prefabs/              ALL reusable .tscn, flat files per category (no per-item folder)
     components/         movement_component.tscn, ...
     characters/         character_base.tscn, player.tscn, ...
@@ -129,7 +131,10 @@ res://
     screens/            screen .tscn (main menu, pause, settings, HUD, ...)
     theme/              main_theme.tres + fonts/styleboxes
   data/                 .tres content/stats (category subfolders allowed, e.g. data/movement/)
+    templates/          blueprint templates; not registered in game_database
   materials/            Material / Environment / other visual .tres
     shaders/            ALL .gdshader / .gdshaderinc (toon_lit.gdshader, toon_common.gdshaderinc, ...)
   assets/               imported art, audio, fonts
+    models/             imported 3D models, grouped per pack (monsters/rpg_monster_duo/, props/ghibli_nature/, ...)
+  addons/               editor plugins: plugin.cfg + optional one-line shim only (R11); excluded from export
 ```

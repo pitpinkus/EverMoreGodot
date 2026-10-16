@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="BlueprintCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/blueprint_catalog.gd" id="1_catalog"]
+[ext_resource type="Script" path="res://scripts/resources/blueprint.gd" id="2_blueprint"]
+[ext_resource type="Resource" path="res://data/game_database.tres" id="3_database"]
+[ext_resource type="Resource" path="res://data/templates/monster_template.tres" id="4_monster"]
+[ext_resource type="Resource" path="res://data/templates/move_template.tres" id="5_move"]
+[ext_resource type="Resource" path="res://data/templates/item_template.tres" id="6_item"]
+[ext_resource type="Resource" path="res://data/templates/trainer_encounter_template.tres" id="7_trainer_encounter"]
+[ext_resource type="Resource" path="res://data/templates/wild_encounter_template.tres" id="8_wild_encounter"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/trainer.tscn" id="9_trainer"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/wild_monster.tscn" id="10_wild_monster"]
+
+[sub_resource type="Resource" id="Resource_monster"]
+script = ExtResource("2_blueprint")
+label = "New Monster"
+template = ExtResource("4_monster")
+output_dir = "res://data/monsters"
+database_list = &"species"
+
+[sub_resource type="Resource" id="Resource_move"]
+script = ExtResource("2_blueprint")
+label = "New Move"
+template = ExtResource("5_move")
+output_dir = "res://data/moves"
+database_list = &"moves"
+
+[sub_resource type="Resource" id="Resource_item"]
+script = ExtResource("2_blueprint")
+label = "New Item"
+template = ExtResource("6_item")
+output_dir = "res://data/items"
+database_list = &"items"
+
+[sub_resource type="Resource" id="Resource_trainer"]
+script = ExtResource("2_blueprint")
+label = "New Trainer NPC"
+template = ExtResource("7_trainer_encounter")
+output_dir = "res://data/encounters"
+npc_base_scene = ExtResource("9_trainer")
+npc_scene_dir = "res://prefabs/characters"
+
+[sub_resource type="Resource" id="Resource_wild"]
+script = ExtResource("2_blueprint")
+label = "New Wild NPC"
+template = ExtResource("8_wild_encounter")
+output_dir = "res://data/encounters"
+npc_base_scene = ExtResource("10_wild_monster")
+npc_scene_dir = "res://prefabs/characters"
+
+[resource]
+script = ExtResource("1_catalog")
+database = ExtResource("3_database")
+blueprints = Array[ExtResource("2_blueprint")]([SubResource("Resource_monster"), SubResource("Resource_move"), SubResource("Resource_item"), SubResource("Resource_trainer"), SubResource("Resource_wild")])

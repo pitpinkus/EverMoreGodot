@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model.tscn" id="0_base"]
 [ext_resource type="Material" path="res://materials/monster_placeholder_material.tres" id="1_body"]
 [ext_resource type="Material" path="res://materials/monster_eye_material.tres" id="2_eye"]
 
@@ -17,8 +18,8 @@ height = 0.12
 radial_segments = 16
 rings = 8
 
-[node name="MonsterModelPlaceholder" type="Node3D"]
-editor_description = "Primitive-built monster placeholder, facing -Z. Species variants inherit it, recolour Body/Head and add accent meshes."
+[node name="MonsterModelPlaceholder" instance=ExtResource("0_base")]
+editor_description = "Primitive-built monster placeholder (no clips), facing -Z. Fallback and template model."
 
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)

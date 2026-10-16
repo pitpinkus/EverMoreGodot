@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/toon_lit.gdshader" id="1_shader"]
+[ext_resource type="Material" path="res://materials/toon_outline.tres" id="2_outline"]
+[ext_resource type="Texture2D" path="res://assets/models/monsters/rpg_monster_partners/textures/albedo.png" id="3_albedo"]
+
+[resource]
+next_pass = ExtResource("2_outline")
+shader = ExtResource("1_shader")
+shader_parameter/albedo_texture = ExtResource("3_albedo")
+shader_parameter/rim_amount = 1.0

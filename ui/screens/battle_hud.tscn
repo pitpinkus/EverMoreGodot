@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" path="res://prefabs/ui/choice_list_panel.tscn" id="4_choice_list"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/battle_log.tscn" id="5_log"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/turn_timeline_bar.tscn" id="6_timeline"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/bag_panel.tscn" id="7_bag"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/battle_command_button_big.tscn" id="8_big_button"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/battle_command_button_small.tscn" id="9_small_button"]
 
 [node name="BattleHud" type="Control"]
 layout_mode = 3
@@ -28,72 +31,83 @@ grow_vertical = 2
 mouse_filter = 2
 theme_type_variation = &"ScreenMargin"
 
-[node name="Layout" type="VBoxContainer" parent="Margin"]
+[node name="Columns" type="HBoxContainer" parent="Margin"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TopRow" type="HBoxContainer" parent="Margin/Layout"]
+[node name="TimelineColumn" type="VBoxContainer" parent="Margin/Columns"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TurnInfo" type="VBoxContainer" parent="Margin/Layout/TopRow"]
+[node name="TurnTimeline" parent="Margin/Columns/TimelineColumn" instance=ExtResource("6_timeline")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+slot_count = 6
+
+[node name="MainVBox" type="VBoxContainer" parent="Margin/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/Columns/MainVBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TurnInfo" type="VBoxContainer" parent="Margin/Columns/MainVBox/TopRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_type_variation = &"CompactVBox"
 
-[node name="TurnLabel" type="Label" parent="Margin/Layout/TopRow/TurnInfo"]
+[node name="TurnLabel" type="Label" parent="Margin/Columns/MainVBox/TopRow/TurnInfo"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SectionLabel"
 text_overrun_behavior = 3
 
-[node name="HintLabel" type="Label" parent="Margin/Layout/TopRow/TurnInfo"]
+[node name="HintLabel" type="Label" parent="Margin/Columns/MainVBox/TopRow/TurnInfo"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HintLabel"
 autowrap_mode = 3
 
-[node name="TurnTimeline" parent="Margin/Layout/TopRow" instance=ExtResource("6_timeline")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="EnemySide" type="HBoxContainer" parent="Margin/Layout/TopRow"]
+[node name="EnemySide" type="HBoxContainer" parent="Margin/Columns/MainVBox/TopRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 2
 
-[node name="EnemyPanels" type="VBoxContainer" parent="Margin/Layout/TopRow/EnemySide"]
+[node name="EnemyPanels" type="VBoxContainer" parent="Margin/Columns/MainVBox/TopRow/EnemySide"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"CompactVBox"
 
-[node name="Spacer" type="Control" parent="Margin/Layout"]
+[node name="Spacer" type="Control" parent="Margin/Columns/MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="BottomRow" type="HBoxContainer" parent="Margin/Layout"]
+[node name="BottomRow" type="HBoxContainer" parent="Margin/Columns/MainVBox"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="PlayerPanels" type="VBoxContainer" parent="Margin/Layout/BottomRow"]
+[node name="PlayerPanels" type="VBoxContainer" parent="Margin/Columns/MainVBox/BottomRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 mouse_filter = 2
 theme_type_variation = &"CompactVBox"
 
-[node name="BattleLog" parent="Margin/Layout/BottomRow" instance=ExtResource("5_log")]
+[node name="BattleLog" parent="Margin/Columns/MainVBox/BottomRow" instance=ExtResource("5_log")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
 
-[node name="CommandMenu" type="VBoxContainer" parent="Margin/Layout/BottomRow"]
+[node name="CommandMenu" type="VBoxContainer" parent="Margin/Columns/MainVBox/BottomRow"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -101,32 +115,45 @@ size_flags_vertical = 8
 mouse_filter = 2
 theme_type_variation = &"CompactVBox"
 
-[node name="MoveButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+[node name="MoveButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("3_button")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 48)
 layout_mode = 2
 text = "Move"
 
-[node name="AttackButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+[node name="FightButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("8_big_button")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Attack"
+text = "Fight"
 
-[node name="ItemButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+[node name="BagButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("8_big_button")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Item"
+text = "Bag"
 
-[node name="RunButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+[node name="MonstersButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("8_big_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Monsters"
+
+[node name="RunButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("8_big_button")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Run"
 
-[node name="EndTurnButton" parent="Margin/Layout/BottomRow/CommandMenu" instance=ExtResource("3_button")]
+[node name="EndTurnButton" parent="Margin/Columns/MainVBox/BottomRow/CommandMenu" instance=ExtResource("9_small_button")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "End Turn"
 
-[node name="ChoiceList" parent="Margin/Layout/BottomRow" instance=ExtResource("4_choice_list")]
+[node name="ChoiceList" parent="Margin/Columns/MainVBox/BottomRow" instance=ExtResource("4_choice_list")]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="BagPanel" parent="Margin/Columns/MainVBox/BottomRow" instance=ExtResource("7_bag")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2

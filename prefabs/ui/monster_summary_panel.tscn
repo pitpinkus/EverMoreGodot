@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/monster_summary_panel.gd" id="1_panel"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/element_badge.tscn" id="2_badge"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/entry_row_content.tscn" id="3_move_row"]
+
+[node name="MonsterSummaryPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(500, 0)
+mouse_filter = 2
+script = ExtResource("1_panel")
+move_row_scene = ExtResource("3_move_row")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Header" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="Content/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionLabel"
+text_overrun_behavior = 3
+
+[node name="ElementBadge" parent="Content/Header" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="Content"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Stats"
+
+[node name="StatsGrid" type="GridContainer" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SummaryStatsGrid"
+columns = 2
+
+[node name="MovesTitle" type="Label" parent="Content"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Moves"
+
+[node name="MovesList" type="VBoxContainer" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"

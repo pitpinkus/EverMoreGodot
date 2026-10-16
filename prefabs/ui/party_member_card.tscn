@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/party_member_card.gd" id="1_card"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/element_badge.tscn" id="2_badge"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/monster_status_panel.tscn" id="3_status"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/monster_portrait.tscn" id="4_portrait"]
+
+[node name="PartyMemberCard" type="Button"]
+custom_minimum_size = Vector2(440, 144)
+focus_mode = 2
+theme_type_variation = &"PartyCard"
+script = ExtResource("1_card")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PartyCardMargin"
+
+[node name="Layout" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Portrait" parent="Margin/Layout" instance=ExtResource("4_portrait")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+portrait_size = Vector2(72, 72)
+initial_variation = &"TurnSlotInitialCurrent"
+
+[node name="Info" type="VBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"CompactVBox"
+
+[node name="ElementBadge" parent="Margin/Layout/Info" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StatusPanel" parent="Margin/Layout/Info" instance=ExtResource("3_status")]
+unique_name_in_owner = true
+layout_mode = 2

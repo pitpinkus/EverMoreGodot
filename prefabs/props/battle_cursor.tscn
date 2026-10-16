@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/props/battle_cursor.gd" id="1_cursor"]
 [ext_resource type="Material" path="res://materials/battle_marker_material.tres" id="2_marker"]
+[ext_resource type="Material" path="res://materials/battle_marker_unreachable_material.tres" id="3_unreachable"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_marker"]
 top_radius = 0.35
@@ -10,14 +11,10 @@ height = 0.04
 radial_segments = 32
 rings = 1
 
-[sub_resource type="TorusMesh" id="TorusMesh_range"]
-inner_radius = 0.95
-outer_radius = 1.0
-rings = 96
-ring_segments = 6
-
 [node name="BattleCursor" type="Node3D"]
 script = ExtResource("1_cursor")
+reachable_material = ExtResource("2_marker")
+unreachable_material = ExtResource("3_unreachable")
 
 [node name="Marker" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
@@ -26,12 +23,14 @@ cast_shadow = 0
 material_override = ExtResource("2_marker")
 mesh = SubResource("CylinderMesh_marker")
 
-[node name="RangeRing" type="MeshInstance3D" parent="."]
+[node name="ReachDecal" type="Decal" parent="."]
 unique_name_in_owner = true
 top_level = true
-cast_shadow = 0
-material_override = ExtResource("2_marker")
-mesh = SubResource("TorusMesh_range")
+visible = false
+cull_mask = 1048573
+normal_fade = 0.5
+upper_fade = 0.1
+lower_fade = 0.1
 
 [node name="GroundRay" type="RayCast3D" parent="."]
 unique_name_in_owner = true

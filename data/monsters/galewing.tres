@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/resources/learnset_entry.gd" id="2_learnset_entry"]
 [ext_resource type="Resource" path="res://data/moves/growl.tres" id="3_growl"]
 [ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="4_species_data"]
-[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_gale.tscn" id="5_model"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_beholder.tscn" id="5_model"]
 [ext_resource type="Resource" path="res://data/moves/agility.tres" id="6_agility"]
 
 [sub_resource type="Resource" id="Resource_learn_tackle"]

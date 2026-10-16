@@ -19,6 +19,8 @@
 [ext_resource type="Resource" path="res://data/vfx/default_offensive_vfx.tres" id="17_default_offensive_vfx"]
 [ext_resource type="Resource" path="res://data/vfx/default_support_vfx.tres" id="18_default_support_vfx"]
 [ext_resource type="Resource" path="res://data/vfx/floating_text_style.tres" id="19_floating_text_style"]
+[ext_resource type="Script" path="res://scripts/battle/battle_navigator.gd" id="20_navigator"]
+[ext_resource type="Script" path="res://scripts/battle/battle_camera_rig.gd" id="21_camera_rig"]
 
 [node name="BattleScene" type="Node3D"]
 script = ExtResource("1_scene")
@@ -30,6 +32,7 @@ fallback_encounter = ExtResource("4_encounter")
 layer = 2
 
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("5_pause_menu")]
+field_tiles_enabled = false
 
 [node name="MapSlot" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -49,8 +52,10 @@ script = ExtResource("15_text_spawner")
 style = ExtResource("19_floating_text_style")
 text_scene = ExtResource("16_floating_text")
 
-[node name="CameraAnchor" type="Node3D" parent="."]
+[node name="CameraAnchor" type="Node3D" parent="." node_paths=PackedStringArray("yaw_pivot")]
 unique_name_in_owner = true
+script = ExtResource("21_camera_rig")
+yaw_pivot = NodePath("CameraRig")
 
 [node name="CameraRig" parent="CameraAnchor" instance=ExtResource("6_camera")]
 unique_name_in_owner = true
@@ -67,16 +72,20 @@ unique_name_in_owner = true
 capture_mouse_on_ready = false
 capture_on_click = false
 
-[node name="BattleCursor" parent="." node_paths=PackedStringArray("camera_pivot") instance=ExtResource("8_cursor")]
+[node name="BattleCursor" parent="." instance=ExtResource("8_cursor")]
 unique_name_in_owner = true
-camera_pivot = NodePath("../CameraAnchor/CameraRig")
 
-[node name="BattleManager" type="Node" parent="." node_paths=PackedStringArray("player_controller", "ai_controller", "vfx_player")]
+[node name="BattleNavigator" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("20_navigator")
+
+[node name="BattleManager" type="Node" parent="." node_paths=PackedStringArray("player_controller", "ai_controller", "vfx_player", "navigator")]
 unique_name_in_owner = true
 script = ExtResource("9_manager")
 player_controller = NodePath("PlayerBattleController")
 ai_controller = NodePath("BattleAI")
 vfx_player = NodePath("../ActionVfxPlayer")
+navigator = NodePath("../BattleNavigator")
 
 [node name="PlayerBattleController" type="Node" parent="BattleManager" node_paths=PackedStringArray("hud", "cursor")]
 unique_name_in_owner = true
@@ -97,7 +106,6 @@ unique_name_in_owner = true
 [connection signal="look_requested" from="CameraAnchor/CameraInputComponent" to="CameraAnchor/CameraRig" method="rotate_view"]
 [connection signal="zoom_requested" from="CameraAnchor/CameraInputComponent" to="CameraAnchor/CameraRig" method="zoom"]
 [connection signal="moved" from="BattleCursor" to="." method="_on_cursor_moved"]
-[connection signal="unit_picking_changed" from="BattleCursor" to="." method="_on_unit_picking_changed"]
 [connection signal="battle_ended" from="BattleManager" to="." method="_on_battle_ended"]
 [connection signal="events_recorded" from="BattleManager" to="FloatingTextSpawner" method="show_events"]
 [connection signal="message_logged" from="BattleManager" to="HudLayer/BattleHud" method="log_message"]

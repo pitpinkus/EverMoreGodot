@@ -2,17 +2,24 @@
 
 [ext_resource type="PackedScene" path="res://ui/screens/screen_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="2_menu"]
-[ext_resource type="PackedScene" path="res://prefabs/ui/menu_button.tscn" id="3_button"]
+[ext_resource type="PackedScene" path="res://prefabs/ui/menu_tile.tscn" id="3_tile"]
 [ext_resource type="PackedScene" path="res://ui/screens/settings_menu.tscn" id="4_settings"]
 [ext_resource type="PackedScene" path="res://prefabs/ui/confirm_popup.tscn" id="5_popup"]
 [ext_resource type="PackedScene" path="res://prefabs/components/submenu_switcher.tscn" id="6_switcher"]
 [ext_resource type="PackedScene" path="res://prefabs/components/pause_while_visible_component.tscn" id="7_pause"]
+[ext_resource type="PackedScene" path="res://ui/screens/party_screen.tscn" id="8_party"]
+[ext_resource type="PackedScene" path="res://ui/screens/inventory_screen.tscn" id="9_bag"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/party.svg" id="10_party_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/bag.svg" id="11_bag_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/save.svg" id="12_save_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/options.svg" id="13_options_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/quit.svg" id="14_quit_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/continue.svg" id="15_continue_icon"]
 
-[node name="PauseMenu" node_paths=PackedStringArray("initial_focus") instance=ExtResource("1_base")]
+[node name="PauseMenu" instance=ExtResource("1_base")]
 process_mode = 3
 visible = false
 script = ExtResource("2_menu")
-initial_focus = NodePath("Dimmer/Margin/MenuColumn/ContinueButton")
 
 [node name="Dimmer" type="Panel" parent="."]
 layout_mode = 1
@@ -45,37 +52,66 @@ text = "Paused"
 horizontal_alignment = 1
 
 [node name="TitleSpacer" type="Control" parent="Dimmer/Margin/MenuColumn"]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="ContinueButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+[node name="Tiles" type="GridContainer" parent="Dimmer/Margin/MenuColumn"]
 unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_top = NodePath("../QuitButton")
-text = "Continue"
+size_flags_horizontal = 4
+theme_type_variation = &"MenuTileGrid"
+columns = 3
 
-[node name="SaveButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+[node name="PartyTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Party"
+icon = ExtResource("10_party_icon")
+
+[node name="BagTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Bag"
+icon = ExtResource("11_bag_icon")
+
+[node name="SaveTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Save"
+icon = ExtResource("12_save_icon")
 
-[node name="SettingsButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+[node name="OptionsTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Settings"
+text = "Options"
+icon = ExtResource("13_options_icon")
 
-[node name="QuitButton" parent="Dimmer/Margin/MenuColumn" instance=ExtResource("3_button")]
+[node name="QuitTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
 unique_name_in_owner = true
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../ContinueButton")
 text = "Quit to Title"
+icon = ExtResource("14_quit_icon")
+
+[node name="ContinueTile" parent="Dimmer/Margin/MenuColumn/Tiles" instance=ExtResource("3_tile")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Continue"
+icon = ExtResource("15_continue_icon")
 
 [node name="SaveStatusLabel" type="Label" parent="Dimmer/Margin/MenuColumn"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HintLabel"
 horizontal_alignment = 1
+
+[node name="PartyScreen" parent="." instance=ExtResource("8_party")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="BagScreen" parent="." instance=ExtResource("9_bag")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="SettingsMenu" parent="." instance=ExtResource("4_settings")]
 unique_name_in_owner = true

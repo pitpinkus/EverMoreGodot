@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/moves/heal_pulse.tres" id="4_heal_pulse"]
 [ext_resource type="Resource" path="res://data/moves/growl.tres" id="5_growl"]
 [ext_resource type="Script" path="res://scripts/resources/species_data.gd" id="6_species_data"]
-[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_moss.tscn" id="7_model"]
+[ext_resource type="PackedScene" path="res://prefabs/characters/monster_model_turtle_shell.tscn" id="7_model"]
 [ext_resource type="Resource" path="res://data/moves/chill_gaze.tres" id="8_chill_gaze"]
 
 [sub_resource type="Resource" id="Resource_learn_tackle"]

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://prefabs/ui/turn_slot.tscn" id="1_slot"]
+
+[node name="TurnSlotCurrent" instance=ExtResource("1_slot")]
+custom_minimum_size = Vector2(100, 0)
+
+[node name="Portrait" parent="Content" index="0"]
+portrait_size = Vector2(64, 64)
+initial_variation = &"TurnSlotInitialCurrent"
+
+[node name="NameLabel" parent="Content" index="1"]
+custom_minimum_size = Vector2(92, 0)
+theme_type_variation = &"TurnSlotNameCurrent"

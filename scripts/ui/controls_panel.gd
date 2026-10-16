@@ -1,8 +1,9 @@
 class_name ControlsPanel
 extends VBoxContainer
-## Lists every action of action_list as a RebindRow. Binding an input that another
-## listed action already uses removes it from that action; inputs of the list's
-## reserved actions are refused. Changes are reported with bindings_changed;
+## Lists every action of action_list as a RebindRow, with a heading wherever the
+## action's section changes. Binding an input that another listed action of a shared
+## context (overworld / battle) already uses removes it from that action; inputs of
+## the list's reserved actions are refused. Changes are reported with bindings_changed;
 ## nothing is applied here.
 
 signal bindings_changed(action: StringName, events: Array[InputEvent])
@@ -10,6 +11,8 @@ signal bindings_changed(action: StringName, events: Array[InputEvent])
 @export var action_list: RebindableActionList
 ## Scene instanced once per action; its root must be a RebindRow.
 @export var row_scene: PackedScene
+## Theme type variation of the section headings inserted between rows.
+@export var section_variation: StringName = &"SectionLabel"
 
 var _rows: Dictionary[StringName, RebindRow] = {}
 var _action_names: Array[StringName] = []
@@ -25,7 +28,11 @@ func _ready() -> void:
 		push_error("ControlsPanel '%s' needs action_list and row_scene." % name)
 		return
 	_action_names = action_list.get_action_names()
+	var section: String = ""
 	for entry: RebindableAction in action_list.actions:
+		if entry.section != section:
+			section = entry.section
+			_add_section_label(section)
 		var row: RebindRow = row_scene.instantiate() as RebindRow
 		if row == null:
 			push_error("ControlsPanel '%s': row_scene root is not a RebindRow." % name)
@@ -50,7 +57,8 @@ func _on_row_binding_changed(action: StringName, events: Array[InputEvent]) -> v
 			_rows[action].set_events(InputBindings.get_events(_overrides, action))
 			return
 	for event: InputEvent in events:
-		var other: StringName = InputBindings.find_conflict(_overrides, event, _action_names, action)
+		var other: StringName = InputBindings.find_conflict(_overrides, event,
+				action_list.get_conflict_candidates(action), action)
 		if other != &"":
 			_change_binding(other, InputBindings.remove_event(InputBindings.get_events(_overrides, other), event))
 	_change_binding(action, events)
@@ -59,6 +67,13 @@ func _on_row_binding_changed(action: StringName, events: Array[InputEvent]) -> v
 func _on_reset_controls_pressed() -> void:
 	for action: StringName in _action_names:
 		_change_binding(action, InputBindings.get_default_events(action))
+
+
+func _add_section_label(text: String) -> void:
+	var label: Label = Label.new()
+	label.theme_type_variation = section_variation
+	label.text = text
+	_rows_box.add_child(label)
 
 
 func _change_binding(action: StringName, events: Array[InputEvent]) -> void:

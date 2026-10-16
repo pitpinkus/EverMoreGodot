@@ -12,6 +12,9 @@ const KEY_LEVEL: String = "level"
 const KEY_IVS: String = "ivs"
 const KEY_CURRENT_HP: String = "current_hp"
 const KEY_MOVES: String = "moves"
+## Player-facing "Name  Lv 5" and "HP 12 / 30" (see get_name_with_level / get_hp_text).
+const NAME_LEVEL_FORMAT: String = "%s  Lv %d"
+const HP_TEXT_FORMAT: String = "HP %d / %d"
 
 @export var species: SpeciesData
 ## Empty = use the species name.
@@ -76,6 +79,16 @@ func to_dict() -> Dictionary:
 
 func get_display_name() -> String:
 	return nickname if not nickname.is_empty() else species.display_name
+
+
+## Display name and level, e.g. "Emberling  Lv 5".
+func get_name_with_level() -> String:
+	return NAME_LEVEL_FORMAT % [get_display_name(), level]
+
+
+## Current and max HP, e.g. "HP 12 / 30".
+func get_hp_text() -> String:
+	return HP_TEXT_FORMAT % [current_hp, get_max_hp()]
 
 
 ## stat at the current level, before battle stat stages.

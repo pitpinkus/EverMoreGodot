@@ -34,12 +34,10 @@ func open(title: String, entries: Array[ChoiceEntry]) -> void:
 		row.set_entry(entries[index])
 		row.pressed.connect(_on_row_pressed.bind(index))
 		row.focus_entered.connect(_show_description.bind(entries[index].description))
-		row.mouse_entered.connect(row.grab_focus)
 		_rows.append(row)
 	var controls: Array[Control] = []
 	controls.assign(_rows)
-	if not controls.is_empty():
-		FocusUtils.wrap_vertical(controls)
+	FocusUtils.setup_vertical_list(controls)
 	_empty_label.visible = _rows.is_empty()
 	_description_label.text = ""
 	show()

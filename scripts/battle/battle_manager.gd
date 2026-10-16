@@ -6,7 +6,9 @@ extends Node
 ## validated and executed here, the only place that changes the battle. A unit may
 ## walk within its step budget and act once; its turn ends on END_TURN, when it has
 ## acted and has almost no steps left, or when the battle is over.
-## Read-only queries (get_units, get_valid_targets, ...) are for controllers and UI.
+## Read-only queries are for controllers and UI: get_roster() for who is in the battle,
+## get_targeting() for who an action can be used on, get_navigator() for walk paths and
+## reach, plus the turn state below.
 
 signal turn_started(unit: BattleMonster)
 signal turn_ended(unit: BattleMonster)
@@ -26,6 +28,8 @@ const FLEE_FAILED_MESSAGE: String = "Couldn't get away!"
 @export var ai_controller: BattleController
 ## Plays action and status VFX. Null = no VFX (e.g. headless tests).
 @export var vfx_player: ActionVfxPlayer
+## Paths for MOVE decisions; rebaked around the other living units each turn.
+@export var navigator: BattleNavigator
 
 var _setup: BattleSetup
 var _rules: BattleRules
@@ -36,18 +40,20 @@ var _scheduler: TurnScheduler
 ## The unit whose turn it is, or null between turns.
 var _current: BattleMonster
 var _timeline_change_queued: bool = false
-var _player_units: Array[BattleMonster] = []
-var _enemy_units: Array[BattleMonster] = []
+var _roster: BattleRoster
+var _targeting: BattleTargeting
 var _acted: Dictionary[BattleMonster, bool] = {}
 var _result: BattleResult
 ## Units that fainted since the last _log_all; announced after the messages that caused it.
 var _new_faints: Array[BattleMonster] = []
+## A unit fainted since the navmesh was last baked, so it no longer blocks paths.
+var _navigation_dirty: bool = false
 
 
 ## Starts the battle loop with units already placed in the scene. Ends with battle_ended.
 func start(setup: BattleSetup, player_units: Array[BattleMonster], enemy_units: Array[BattleMonster]) -> void:
-	if player_controller == null or ai_controller == null:
-		push_error("BattleManager '%s' needs both controllers assigned." % name)
+	if player_controller == null or ai_controller == null or navigator == null:
+		push_error("BattleManager '%s' needs both controllers and the navigator assigned." % name)
 		return
 	_setup = setup
 	_rules = DataRegistry.get_rules()
@@ -55,55 +61,28 @@ func start(setup: BattleSetup, player_units: Array[BattleMonster], enemy_units: 
 	_sequence = ActionSequence.new(_resolver, vfx_player)
 	_sequence.events_recorded.connect(events_recorded.emit)
 	_sequence.messages_logged.connect(_log_all)
-	_player_units = player_units
-	_enemy_units = enemy_units
+	_roster = BattleRoster.new(player_units, enemy_units)
+	_targeting = BattleTargeting.new(_roster, _resolver, setup.is_wild)
 	_result = null
 	_scheduler = TurnScheduler.new(_rules, _rng.randi())
 	_scheduler.order_changed.connect(_queue_timeline_changed)
-	for unit: BattleMonster in _get_all_units():
+	for unit: BattleMonster in _roster.get_all_units():
 		unit.fainted.connect(_on_unit_fainted)
 		if unit.is_alive():
 			_scheduler.add(unit)
 	_run_battle()
 
 
-## Living units of side, in their original order.
-func get_units(side: BattleTypes.Side) -> Array[BattleMonster]:
-	var all_units: Array[BattleMonster] = _player_units if side == BattleTypes.Side.PLAYER else _enemy_units
-	var alive: Array[BattleMonster] = []
-	alive.assign(all_units.filter(func(unit: BattleMonster) -> bool: return unit.is_alive()))
-	return alive
+func get_roster() -> BattleRoster:
+	return _roster
 
 
-func get_opponents(unit: BattleMonster) -> Array[BattleMonster]:
-	return get_units(BattleTypes.Side.ENEMY if unit.side == BattleTypes.Side.PLAYER else BattleTypes.Side.PLAYER)
+func get_targeting() -> BattleTargeting:
+	return _targeting
 
 
-## Living units on unit's side, unit included.
-func get_allies(unit: BattleMonster) -> Array[BattleMonster]:
-	return get_units(unit.side)
-
-
-## Units action can be used on right now: right side, in range and where it would do something.
-func get_valid_targets(unit: BattleMonster, action: ActionData) -> Array[BattleMonster]:
-	var candidates: Array[BattleMonster] = []
-	match action.target_kind:
-		BattleTypes.TargetKind.SELF:
-			candidates = [unit]
-		BattleTypes.TargetKind.ENEMY:
-			candidates = get_opponents(unit)
-		BattleTypes.TargetKind.ALLY:
-			candidates = get_allies(unit)
-	var valid: Array[BattleMonster] = []
-	for target: BattleMonster in candidates:
-		var probe: EffectContext = _resolver.make_context(unit, target, action, is_wild())
-		if is_in_range(unit, target, action) and action.can_use_on(probe):
-			valid.append(target)
-	return valid
-
-
-func is_in_range(unit: BattleMonster, target: BattleMonster, action: ActionData) -> bool:
-	return unit == target or BattleFormulas.flat_distance(unit.global_position, target.global_position) <= action.max_range
+func get_navigator() -> BattleNavigator:
+	return navigator
 
 
 func has_acted(unit: BattleMonster) -> bool:
@@ -114,19 +93,8 @@ func steps_left(unit: BattleMonster) -> float:
 	return unit.get_step_budget().get_remaining()
 
 
-func is_wild() -> bool:
-	return _setup.is_wild
-
-
 func can_flee() -> bool:
 	return _setup.is_wild
-
-
-## Items the player can use in battle right now (held and battle-usable).
-func can_use_item(unit: BattleMonster, item: ItemData) -> bool:
-	return unit.side == BattleTypes.Side.PLAYER \
-			and item.is_usable_in(ItemData.UseContext.BATTLE) \
-			and PlayerProfile.inventory.get_count(item) > 0
 
 
 func get_rules() -> BattleRules:
@@ -169,8 +137,11 @@ func _run_turn(unit: BattleMonster) -> void:
 	_check_battle_over()
 	var controller: BattleController = player_controller if unit.side == BattleTypes.Side.PLAYER else ai_controller
 	if _result == null and unit.is_alive():
+		await _prepare_navigation(unit)
 		controller.begin_turn(unit, self)
 	while _result == null and unit.is_alive():
+		if _navigation_dirty:
+			await _prepare_navigation(unit)
 		var decision: BattleDecision = await controller.decide(unit, self)
 		if decision == null or decision.kind == BattleDecision.Kind.END_TURN:
 			break
@@ -188,9 +159,11 @@ func _run_turn(unit: BattleMonster) -> void:
 func _execute(unit: BattleMonster, decision: BattleDecision) -> bool:
 	match decision.kind:
 		BattleDecision.Kind.MOVE:
-			if minf(steps_left(unit), BattleFormulas.flat_distance(unit.global_position, decision.point)) < _rules.min_move_distance:
+			var path: PackedVector3Array = navigator.get_path_within(unit.global_position, decision.point,
+					steps_left(unit))
+			if BattleNavigator.path_length(path) < _rules.min_move_distance:
 				return false
-			await unit.move_to(decision.point)
+			await unit.move_along(path)
 			return true
 		BattleDecision.Kind.ACTION:
 			if not _is_action_allowed(unit, decision.action, decision.target):
@@ -205,21 +178,21 @@ func _execute(unit: BattleMonster, decision: BattleDecision) -> bool:
 	return false
 
 
+## Bakes the walkable area around every living unit except unit. Await it.
+func _prepare_navigation(unit: BattleMonster) -> void:
+	_navigation_dirty = false
+	await navigator.prepare_turn(unit, _roster.get_blockers(unit))
+
+
 func _is_action_allowed(unit: BattleMonster, action: ActionData, target: BattleMonster) -> bool:
-	if action == null or target == null or has_acted(unit):
-		return false
-	if action is MoveData and not unit.instance.moves.has(action):
-		return false
-	if action is ItemData and not can_use_item(unit, action as ItemData):
-		return false
-	return get_valid_targets(unit, action).has(target)
+	return not has_acted(unit) and _targeting.is_action_allowed(unit, action, target)
 
 
 func _execute_action(unit: BattleMonster, action: ActionData, target: BattleMonster) -> void:
 	_acted[unit] = true
 	if target != unit:
 		unit.face_towards(target.global_position)
-	var ctx: EffectContext = await _sequence.run_action(unit, action, target, is_wild())
+	var ctx: EffectContext = await _sequence.run_action(unit, action, target, _setup.is_wild)
 	var item: ItemData = action as ItemData
 	if item != null and item.consumed_on_use:
 		PlayerProfile.inventory.remove(item)
@@ -244,9 +217,9 @@ func _try_flee(unit: BattleMonster) -> void:
 func _check_battle_over() -> void:
 	if _result != null:
 		return
-	if get_units(BattleTypes.Side.ENEMY).is_empty():
+	if _roster.is_defeated(BattleTypes.Side.ENEMY):
 		_finish(BattleTypes.Outcome.WON)
-	elif get_units(BattleTypes.Side.PLAYER).is_empty():
+	elif _roster.is_defeated(BattleTypes.Side.PLAYER):
 		_finish(BattleTypes.Outcome.LOST)
 
 
@@ -257,13 +230,6 @@ func _finish(outcome: BattleTypes.Outcome, captured: MonsterInstance = null) -> 
 	_result.outcome = outcome
 	_result.captured = captured
 	_result.encounter_id = _setup.encounter_id
-
-
-## Every unit of both sides (player side first), fainted ones included.
-func _get_all_units() -> Array[BattleMonster]:
-	var units: Array[BattleMonster] = _player_units.duplicate()
-	units.append_array(_enemy_units)
-	return units
 
 
 ## Logs messages, then announces and animates the faints they caused.
@@ -296,5 +262,6 @@ func _emit_timeline_changed() -> void:
 
 func _on_unit_fainted(unit: BattleMonster) -> void:
 	_new_faints.append(unit)
+	_navigation_dirty = true
 	_scheduler.remove(unit)
 	_queue_timeline_changed()

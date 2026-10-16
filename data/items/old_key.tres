@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="1_battle_effect"]
 [ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="2_item_data"]
+[ext_resource type="Resource" path="res://data/items/pockets/key.tres" id="90_pocket"]
 
 [resource]
 script = ExtResource("2_item_data")
@@ -12,5 +13,6 @@ target_kind = 0
 max_range = 0.0
 effects = Array[ExtResource("1_battle_effect")]([])
 usable_in = 0
+pocket = ExtResource("90_pocket")
 consumed_on_use = false
 max_stack = 1

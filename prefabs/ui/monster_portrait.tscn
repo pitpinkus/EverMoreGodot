@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/monster_portrait.gd" id="1_portrait"]
+
+[node name="MonsterPortrait" type="PanelContainer"]
+mouse_filter = 2
+theme_type_variation = &"PortraitFrame"
+script = ExtResource("1_portrait")
+
+[node name="Icon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Initial" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+horizontal_alignment = 1
+vertical_alignment = 1

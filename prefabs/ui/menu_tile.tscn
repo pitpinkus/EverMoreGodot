@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[node name="MenuTile" type="Button"]
+custom_minimum_size = Vector2(200, 128)
+focus_mode = 2
+theme_type_variation = &"MenuTile"
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true

@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/resources/battle_effect.gd" id="2_battle_effect"]
 [ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="3_item_data"]
 [ext_resource type="Resource" path="res://data/vfx/stat_up_vfx.tres" id="4_vfx"]
+[ext_resource type="Resource" path="res://data/items/pockets/battle.tres" id="90_pocket"]
 
 [sub_resource type="Resource" id="Resource_attack_up"]
 script = ExtResource("1_stat_stage_effect")
@@ -21,6 +22,7 @@ target_kind = 0
 max_range = 0.0
 effects = Array[ExtResource("2_battle_effect")]([SubResource("Resource_attack_up")])
 usable_in = 1
+pocket = ExtResource("90_pocket")
 consumed_on_use = true
 max_stack = 99
 vfx = ExtResource("4_vfx")

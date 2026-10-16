@@ -9,5 +9,11 @@ extends Resource
 @export var is_wild: bool = true
 
 
+## The species to show for this encounter in the overworld, or null if there is no
+## single one (e.g. a random table).
+func get_preview_species() -> SpeciesData:
+	return null
+
+
 ## Builds the enemy side for one battle.
 @abstract func build_enemy_team(rng: RandomNumberGenerator, rules: BattleRules) -> Array[MonsterInstance]

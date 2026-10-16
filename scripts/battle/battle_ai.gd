@@ -4,7 +4,8 @@ extends BattleController
 ## 1. Low on HP: use a heal move on itself (or the weakest ally in range).
 ## 2. Use the damaging move with the best power * accuracy on the weakest target in range.
 ## 3. Nothing to hit: raise its own stats with a self stat move (up to max_self_stage).
-## 4. Not moved yet: walk towards the nearest opponent, stopping inside attack range.
+## 4. Not moved yet: walk (around obstacles and units) towards the nearest opponent,
+##    stopping inside attack range.
 ## 5. End the turn.
 ## It can move and then attack (or attack and then move) in the same turn.
 
@@ -31,41 +32,44 @@ func decide(unit: BattleMonster, battle: BattleManager) -> BattleDecision:
 			return decision
 	if not _has_moved:
 		_has_moved = true
-		var destination: Vector3 = _pick_destination(unit, battle)
-		if BattleFormulas.flat_distance(unit.global_position, destination) >= battle.get_rules().min_move_distance:
-			return BattleDecision.move_to(destination)
+		var path: PackedVector3Array = battle.get_navigator().get_path_within(unit.global_position,
+				_pick_destination(unit, battle), battle.steps_left(unit))
+		if BattleNavigator.path_length(path) >= battle.get_rules().min_move_distance:
+			return BattleDecision.move_to(path[path.size() - 1])
 	return BattleDecision.end_turn()
 
 
 ## Steps 1-3 of the priority list; null if no action is worth using now.
 func _pick_action(unit: BattleMonster, battle: BattleManager) -> BattleDecision:
 	var moves: Array[MoveData] = unit.instance.moves
+	var targeting: BattleTargeting = battle.get_targeting()
 	if unit.instance.get_hp_ratio() < profile.heal_threshold:
 		for move: MoveData in moves:
 			if _is_heal(move):
-				var heal_targets: Array[BattleMonster] = battle.get_valid_targets(unit, move)
+				var heal_targets: Array[BattleMonster] = targeting.get_valid_targets(unit, move)
 				if not heal_targets.is_empty():
 					return BattleDecision.use(move, unit if heal_targets.has(unit) else _weakest(heal_targets))
 	var best_move: MoveData = null
 	var best_score: float = 0.0
 	for move: MoveData in moves:
-		var score: float = _get_power(move) * move.get_accuracy()
-		if score > best_score and not battle.get_valid_targets(unit, move).is_empty():
+		var score: float = move.get_power() * move.get_accuracy()
+		if score > best_score and not targeting.get_valid_targets(unit, move).is_empty():
 			best_move = move
 			best_score = score
 	if best_move != null:
-		return BattleDecision.use(best_move, _weakest(battle.get_valid_targets(unit, best_move)))
+		return BattleDecision.use(best_move, _weakest(targeting.get_valid_targets(unit, best_move)))
 	if profile.use_stat_moves:
 		for move: MoveData in moves:
 			if _raises_own_stat_below(move, unit, profile.max_self_stage) \
-					and battle.get_valid_targets(unit, move).has(unit):
+					and targeting.get_valid_targets(unit, move).has(unit):
 				return BattleDecision.use(move, unit)
 	return null
 
 
-## A point towards the nearest opponent, at max damaging range * range_margin from it.
+## Where the unit would like to stand: max damaging range * range_margin from the
+## nearest opponent, on the straight line towards it. The walk there may be cut short.
 func _pick_destination(unit: BattleMonster, battle: BattleManager) -> Vector3:
-	var opponents: Array[BattleMonster] = battle.get_opponents(unit)
+	var opponents: Array[BattleMonster] = battle.get_roster().get_opponents(unit)
 	if opponents.is_empty():
 		return unit.global_position
 	var nearest: BattleMonster = opponents[0]
@@ -75,20 +79,10 @@ func _pick_destination(unit: BattleMonster, battle: BattleManager) -> Vector3:
 			nearest = opponent
 	var attack_range: float = 0.0
 	for move: MoveData in unit.instance.moves:
-		if _get_power(move) > 0:
+		if move.get_power() > 0:
 			attack_range = maxf(attack_range, move.max_range)
 	var away: Vector3 = BattleFormulas.flat_offset(nearest.global_position, unit.global_position)
-	var destination: Vector3 = nearest.global_position + away.normalized() * attack_range * profile.range_margin
-	return unit.get_step_budget().clamp_destination(destination)
-
-
-## Total DamageEffect power of move (0 = not a damaging move).
-static func _get_power(move: MoveData) -> int:
-	var power: int = 0
-	for effect: BattleEffect in move.effects:
-		if effect is DamageEffect and not effect.target_self:
-			power += (effect as DamageEffect).power
-	return power
+	return nearest.global_position + away.normalized() * attack_range * profile.range_margin
 
 
 static func _is_heal(move: MoveData) -> bool:

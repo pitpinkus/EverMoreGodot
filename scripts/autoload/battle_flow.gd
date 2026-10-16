@@ -29,13 +29,7 @@ var _fade: ScreenFade
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	SaveSystem.load_completed.connect(_on_load_completed)
-	if ResourceLoader.exists(FADE_SCENE_PATH):
-		var fade_scene: PackedScene = load(FADE_SCENE_PATH) as PackedScene
-		_fade = fade_scene.instantiate() as ScreenFade if fade_scene != null else null
-		if _fade != null:
-			add_child(_fade)
-		else:
-			push_warning("BattleFlow: '%s' is not a ScreenFade scene; scene changes won't fade." % FADE_SCENE_PATH)
+	_fade = OptionalScene.add_to(self, FADE_SCENE_PATH, ScreenFade) as ScreenFade
 
 
 func _process(delta: float) -> void:
